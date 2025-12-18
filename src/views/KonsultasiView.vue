@@ -1,0 +1,767 @@
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRoute } from "vue-router";
+import Navbar from "../components/Navbar.vue";
+import { Star, Calendar, Clock, CheckCircle, GraduationCap, Briefcase, Video } from "lucide-vue-next";
+import VideoCallModal from "../components/VideoCallModal.vue";
+
+const activeMenu = ref("Konsultan Tersedia");
+const selectedConsultant = ref(null);
+const bookingDate = ref("");
+const bookingTime = ref("");
+const mySchedule = ref([]);
+
+const consultationHistory = ref([]);
+const showVideoCall = ref(false);
+const activeAppointment = ref(null);
+
+const route = useRoute();
+
+const menuItems = ["Jadwal Saya", "Konsultan Tersedia", "Riwayat Konsultasi"];
+
+const consultants = [
+  {
+    id: 1,
+    name: "Dr. Sarah Wijaya, M.Psi",
+    role: "Psikolog Klinis - Anxiety & Stress Management",
+    rating: 4.9,
+    imageGradient: "linear-gradient(135deg, #81C7D4 0%, #A2D2CD 100%)", // Blue-Teal
+    experience: "7 Tahun",
+    alumni: "S2 Psikologi Klinis, Universitas Indonesia",
+    price: "Rp 250.000",
+    approach: "Cognitive Behavioral Therapy (CBT), Mindfulness-Based Therapy",
+    about: "Berfokus pada membantu individu mengatasi kecemasan dan stres melalui pendekatan yang terstruktur dan empatik."
+  },
+  {
+    id: 2,
+    name: "Dr. Budi Santoso, Sp.KJ",
+    role: "Psikiater - Depression & Mood Disorders",
+    rating: 4.8,
+    imageGradient: "linear-gradient(135deg, #A8D5BA 0%, #81C7D4 100%)", // Green-Blue
+    experience: "10 Tahun",
+    alumni: "Spesialis Kedokteran Jiwa, Universitas Gadjah Mada",
+    price: "Rp 350.000",
+    approach: "Pharmacotherapy, Psychodynamic Therapy",
+    about: "Berpengalaman dalam menangani gangguan mood dan depresi dengan pendekatan medis dan psikologis yang seimbang."
+  },
+  {
+    id: 3,
+    name: "Psikolog Amanda Chen, M.Psi",
+    role: "Psikolog Konseling - Relationship & Family",
+    rating: 4.7,
+    imageGradient: "linear-gradient(135deg, #89C4F4 0%, #A2D2CD 100%)", // Light Blue
+    experience: "5 Tahun",
+    alumni: "S2 Psikologi Profesi, Universitas Padjadjaran",
+    price: "Rp 200.000",
+    approach: "Family Systems Therapy, Emotionally Focused Therapy",
+    about: "Membantu pasangan dan keluarga membangun komunikasi yang sehat dan hubungan yang harmonis."
+  },
+];
+
+const selectConsultant = (consultant) => {
+  selectedConsultant.value = consultant;
+  // Set default tomorrow
+  const tomorrow = new Date();
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  bookingDate.value = tomorrow.toISOString().split('T')[0];
+  bookingTime.value = "10:00";
+};
+
+const closeDetailPanel = () => {
+  selectedConsultant.value = null;
+};
+
+const confirmBooking = () => {
+  if (bookingDate.value && bookingTime.value && selectedConsultant.value) {
+    const newAppointment = {
+      id: Date.now(),
+      consultant: selectedConsultant.value,
+      date: bookingDate.value,
+      time: bookingTime.value,
+      status: 'upcoming'
+    };
+    
+    mySchedule.value.push(newAppointment);
+    saveAppointments();
+    alert("Jadwal konsultasi berhasil dibuat!");
+    closeDetailPanel();
+    activeMenu.value = "Jadwal Saya";
+  }
+};
+
+const finishConsultation = (appointment) => {
+  appointment.status = 'completed';
+  // Move to history
+  consultationHistory.value.push(appointment);
+  // Remove from schedule
+  mySchedule.value = mySchedule.value.filter(a => a.id !== appointment.id);
+  
+  saveAppointments();
+};
+
+const saveAppointments = () => {
+  const allAppointments = [...mySchedule.value, ...consultationHistory.value];
+  localStorage.setItem("pedulimental_appointments", JSON.stringify(allAppointments));
+};
+
+const startVideoCall = (appointment) => {
+  activeAppointment.value = appointment;
+  showVideoCall.value = true;
+};
+
+const endVideoCall = () => {
+  showVideoCall.value = false;
+  activeAppointment.value = null;
+};
+
+onMounted(() => {
+  const saved = localStorage.getItem("pedulimental_appointments");
+  if (saved) {
+    const parsed = JSON.parse(saved);
+    mySchedule.value = parsed.filter(a => a.status === 'upcoming');
+    consultationHistory.value = parsed.filter(a => a.status === 'completed');
+  }
+
+  // Check for pre-selected consultant from other pages (e.g. Riwayat)
+  if (route.query.consultantId) {
+    const cId = parseInt(route.query.consultantId);
+    const found = consultants.find(c => c.id === cId);
+    if (found) {
+        selectConsultant(found);
+    }
+  }
+});
+</script>
+
+<template>
+  <div class="konsultasi-page">
+    <Navbar />
+
+    <div class="container main-content">
+      <div class="layout-grid" :class="{ 'with-detail': selectedConsultant && activeMenu === 'Konsultan Tersedia' }">
+        <!-- Sidebar Menu -->
+        <div class="sidebar">
+          <div class="menu-list">
+            <button
+              v-for="item in menuItems"
+              :key="item"
+              class="menu-item"
+              :class="{ active: activeMenu === item }"
+              @click="activeMenu = item"
+            >
+              {{ item }}
+            </button>
+          </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="content-area">
+          <h2 class="section-title" v-if="!selectedConsultant || activeMenu !== 'Konsultan Tersedia'">
+             {{ activeMenu }}
+          </h2>
+          <h2 class="section-title" v-else>Konsultan Tersedia</h2>
+
+          <div
+            v-if="activeMenu === 'Konsultan Tersedia'"
+            class="consultant-list"
+          >
+            <div
+              v-for="consultant in consultants"
+              :key="consultant.id"
+              class="consultant-card"
+              :class="{ active: selectedConsultant?.id === consultant.id }"
+            >
+              <div
+                class="card-avatar"
+                :style="{ background: consultant.imageGradient }"
+              ></div>
+
+              <div class="card-info">
+                <h3 class="consultant-name">{{ consultant.name }}</h3>
+                <p class="consultant-role">{{ consultant.role }}</p>
+                <div class="rating-badge">
+                  <Star :size="16" fill="#FCD34D" color="#FCD34D" />
+                  <span>{{ consultant.rating }}</span>
+                </div>
+
+                <button class="select-btn" @click="selectConsultant(consultant)">
+                  {{ selectedConsultant?.id === consultant.id ? 'Terpilih' : 'Pilih Konsultan' }}
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div v-else-if="activeMenu === 'Jadwal Saya'" class="schedule-list">
+             <div v-if="mySchedule.length > 0" class="schedule-grid">
+               <div v-for="appointment in mySchedule" :key="appointment.id" class="schedule-card">
+                 <div class="schedule-header">
+                   <div class="card-avatar small" :style="{ background: appointment.consultant.imageGradient }"></div>
+                   <div>
+                     <h4 class="consultant-name small">{{ appointment.consultant.name }}</h4>
+                     <p class="consultant-role small">{{ appointment.consultant.role }}</p>
+                   </div>
+                 </div>
+                 <div class="schedule-time">
+                   <div class="time-row">
+                     <Calendar :size="16" />
+                     <span>{{ appointment.date }}</span>
+                   </div>
+                   <div class="time-row">
+                     <Clock :size="16" />
+                     <span>{{ appointment.time }}</span>
+                   </div>
+                 </div>
+                <div class="action-buttons">
+                  <button class="video-btn" @click="startVideoCall(appointment)">
+                    <Video :size="18" />
+                    Video Call
+                  </button>
+                  <button class="finish-btn" @click="finishConsultation(appointment)">Selesai Konsultasi</button>
+                </div>
+               </div>
+             </div>
+             <div v-else class="empty-placeholder">
+               <p>Belum ada jadwal konsultasi.</p>
+             </div>
+          </div>
+
+          <div v-else-if="activeMenu === 'Riwayat Konsultasi'" class="history-list">
+             <div v-if="consultationHistory.length > 0" class="schedule-grid">
+               <div v-for="appointment in consultationHistory" :key="appointment.id" class="schedule-card history">
+                 <div class="schedule-header">
+                   <div class="card-avatar small" :style="{ background: appointment.consultant.imageGradient }"></div>
+                   <div>
+                     <h4 class="consultant-name small">{{ appointment.consultant.name }}</h4>
+                     <p class="consultant-role small">{{ appointment.consultant.role }}</p>
+                   </div>
+                 </div>
+                 <div class="schedule-time">
+                   <div class="time-row">
+                     <Calendar :size="16" />
+                     <span>{{ appointment.date }}</span>
+                   </div>
+                   <div class="time-row">
+                     <CheckCircle :size="16" color="#5AB2A8" />
+                     <span class="completed-text">Selesai</span>
+                   </div>
+                 </div>
+               </div>
+             </div>
+             <div v-else class="empty-placeholder">
+               <p>Belum ada riwayat konsultasi.</p>
+             </div>
+          </div>
+
+          <div v-else class="empty-placeholder">
+            <p>Belum ada data untuk bagian ini.</p>
+          </div>
+        </div>
+
+        <!-- Detail Panel (Right Column) -->
+        <div v-if="selectedConsultant && activeMenu === 'Konsultan Tersedia'" class="detail-panel">
+           <div class="detail-header">
+              <div class="detail-avatar" :style="{ background: selectedConsultant.imageGradient }"></div>
+              <h3 class="detail-name">{{ selectedConsultant.name }}</h3>
+              <p class="detail-role">{{ selectedConsultant.role }}</p>
+           </div>
+           
+           <div class="detail-section">
+              <div class="detail-item">
+                 <div class="detail-icon"><Briefcase :size="18" /></div>
+                 <div>
+                    <span class="detail-label">Pengalaman</span>
+                    <p class="detail-value">{{ selectedConsultant.experience }}</p>
+                 </div>
+              </div>
+              <div class="detail-item">
+                 <div class="detail-icon"><GraduationCap :size="18" /></div>
+                 <div>
+                    <span class="detail-label">Pendidikan</span>
+                    <p class="detail-value">{{ selectedConsultant.alumni }}</p>
+                 </div>
+              </div>
+           </div>
+
+           <div class="detail-divider"></div>
+
+           <div class="detail-section">
+              <h4 class="section-label">Pendekatan</h4>
+              <p class="section-text">{{ selectedConsultant.approach }}</p>
+           </div>
+           
+           <div class="booking-form">
+              <h4 class="section-label">Jadwalkan Sesi</h4>
+              <div class="form-row">
+                  <div class="form-group">
+                    <label>Tanggal</label>
+                    <input type="date" v-model="bookingDate" class="input-light" />
+                  </div>
+                  <div class="form-group">
+                    <label>Waktu</label>
+                    <select v-model="bookingTime" class="input-light">
+                      <option value="09:00">09:00</option>
+                      <option value="10:00">10:00</option>
+                      <option value="11:00">11:00</option>
+                      <option value="13:00">13:00</option>
+                      <option value="14:00">14:00</option>
+                      <option value="15:00">15:00</option>
+                      <option value="16:00">16:00</option>
+                    </select>
+                  </div>
+              </div>
+              
+              <div class="price-info">
+                 <span>Total Biaya</span>
+                 <span class="price-tag">{{ selectedConsultant.price }}</span>
+              </div>
+              
+              <button class="book-now-btn" @click="confirmBooking">
+                 Konfirmasi & Bayar
+              </button>
+           </div>
+        </div>
+      </div>
+    </div>
+
+    <VideoCallModal 
+      v-if="showVideoCall"
+      :is-visible="showVideoCall"
+      :recipient-name="activeAppointment?.consultant?.name || 'Doctor'"
+      @close="endVideoCall"
+    />
+  </div>
+</template>
+
+<style scoped>
+.konsultasi-page {
+  min-height: 100vh;
+  background-color: #f0fdf9;
+  padding-bottom: 60px;
+}
+
+.main-content {
+  padding-top: 40px;
+}
+
+/* Grid Layout Transition */
+.layout-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  transition: all 0.3s ease;
+  align-items: start;
+}
+
+.layout-grid.with-detail {
+  grid-template-columns: 250px 1fr 350px;
+  gap: 20px;
+}
+
+/* Sidebar */
+.sidebar {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  height: fit-content;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  text-align: left;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #f8fafc;
+  color: #5ab2a8;
+}
+
+.menu-item.active {
+  background-color: #5ab2a8;
+  color: white;
+  font-weight: 600;
+}
+
+/* Content Area */
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 24px;
+}
+
+.consultant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.consultant-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.consultant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.consultant-card.active {
+  border-color: #5AB2A8;
+  background-color: #f0fdf9;
+}
+
+.card-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.consultant-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.consultant-role {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.select-btn {
+  background-color: #5ab2a8;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 14px;
+}
+
+.select-btn:hover {
+  background-color: #4a968c;
+}
+
+/* Detail Panel */
+.detail-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.detail-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.detail-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+}
+
+.detail-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.detail-role {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.detail-section {
+  margin-bottom: 24px;
+}
+
+.detail-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: flex-start;
+}
+
+.detail-icon {
+  color: #5AB2A8;
+  margin-top: 2px;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 20px 0;
+}
+
+.section-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-text {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+/* Booking Form in Side Panel */
+.booking-form {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.input-light {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.price-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.price-tag {
+  font-weight: 700;
+  color: #5AB2A8;
+  font-size: 16px;
+}
+
+.book-now-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #5AB2A8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.book-now-btn:hover {
+  background-color: #4a968c;
+}
+
+
+/* Common */
+.empty-placeholder {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  background: white;
+  border-radius: 16px;
+}
+
+/* Reuse Schedule styles */
+.schedule-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.schedule-card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.schedule-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card-avatar.small {
+  width: 50px;
+  height: 50px;
+}
+
+.consultant-name.small {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.consultant-role.small {
+  font-size: 12px;
+  margin-bottom: 0;
+}
+
+.schedule-time {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.finish-btn {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #5AB2A8;
+  background: white;
+  color: #5AB2A8;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.finish-btn:hover {
+  background: #f0fdf9;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.video-btn {
+  flex: 1;
+  padding: 12px;
+  background-color: #5AB2A8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.video-btn:hover {
+  background-color: #4a968c;
+}
+
+.finish-btn {
+  flex: 1;
+}
+
+.completed-text {
+  color: #5ab2a8;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .layout-grid.with-detail {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-panel {
+        position: static;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
