@@ -96,7 +96,13 @@ const closeMenu = () => {
                <strong>{{ user?.name }}</strong>
                <p>{{ user?.email }}</p>
             </div>
-            <button class="dropdown-item" @click="handleLogout">
+            
+            <router-link to="/profile" class="dropdown-item" @click="isProfileMenuOpen = false">
+              <User :size="16" />
+              <span>Lihat Profil</span>
+            </router-link>
+            
+            <button class="dropdown-item logout-btn" @click="handleLogout">
               <LogOut :size="16" />
               <span>Keluar</span>
             </button>
@@ -312,7 +318,7 @@ const closeMenu = () => {
   padding: 10px 12px;
   border: none;
   background: none;
-  color: #ef4444; /* Red for logout */
+  color: #334155; /* Neutral Slate */
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -321,6 +327,14 @@ const closeMenu = () => {
 }
 
 .dropdown-item:hover {
+  background-color: #f1f5f9;
+}
+
+.dropdown-item.logout-btn {
+  color: #ef4444;
+}
+
+.dropdown-item.logout-btn:hover {
   background-color: #fef2f2;
 }
 
