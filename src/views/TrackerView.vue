@@ -7,6 +7,7 @@ const currentQuestion = ref(0);
 const selectedOption = ref(null);
 const progress = ref(10);
 const isFinished = ref(false);
+const isStarted = ref(false);
 const answers = ref([]);
 const resultLevel = ref("");
 
@@ -141,8 +142,13 @@ const restartSurvey = () => {
   selectedOption.value = null;
   progress.value = 10;
   isFinished.value = false;
+  isStarted.value = false;
   answers.value = [];
   resultLevel.value = "";
+};
+
+const startTracker = () => {
+  isStarted.value = true;
 };
 </script>
 
@@ -152,8 +158,25 @@ const restartSurvey = () => {
 
     <div class="container main-content">
       <div class="survey-grid">
+        <!-- Welcome Panel -->
+        <div v-if="!isStarted" class="question-panel welcome-panel">
+          <div class="welcome-icon">
+            <Heart :size="64" stroke-width="1.5" />
+          </div>
+          <h2 class="welcome-title">Selamat Datang di Tracker Kesehatan Mental</h2>
+          <p class="welcome-desc">
+            Luangkan waktu sejenak untuk mengenali perasaan Anda. Tracker ini akan membantu Anda memahami kondisi emosional Anda saat ini dan memberikan rekomendasi yang relevan.
+          </p>
+          <ul class="welcome-points">
+             <li><Check :size="16" /> 5 Pertanyaan singkat</li>
+             <li><Check :size="16" /> Privasi terjaga</li>
+             <li><Check :size="16" /> Rekomendasi personal</li>
+          </ul>
+          <button class="btn-start" @click="startTracker">Mulai Tracker</button>
+        </div>
+
         <!-- Left Panel: Question -->
-        <div v-if="!isFinished" class="question-panel">
+        <div v-else-if="!isFinished" class="question-panel">
           <div class="progress-header">
             <span class="progress-label"
               >Pertanyaan {{ currentQuestion + 1 }} dari
@@ -704,5 +727,85 @@ const restartSurvey = () => {
   color: #5ab2a8;
   flex-shrink: 0;
   margin-top: 2px;
+}
+
+/* Welcome Panel */
+.welcome-panel {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 500px;
+}
+
+.welcome-icon {
+  width: 100px;
+  height: 100px;
+  background-color: #f0fdf9;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #5ab2a8;
+  margin-bottom: 32px;
+}
+
+.welcome-title {
+  font-size: 28px;
+  font-weight: 800;
+  color: #1e293b;
+  margin-bottom: 16px;
+  max-width: 500px;
+}
+
+.welcome-desc {
+  font-size: 16px;
+  color: #64748b;
+  margin-bottom: 32px;
+  max-width: 480px;
+  line-height: 1.6;
+}
+
+.welcome-points {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  gap: 24px;
+  margin-bottom: 40px;
+  color: #475569;
+  font-weight: 500;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.welcome-points li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Reusing check icon color logic if needed or let it inherit */
+.welcome-points li svg {
+  color: #5ab2a8;
+}
+
+.btn-start {
+  padding: 16px 48px;
+  background-color: #5ab2a8;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(90, 178, 168, 0.3);
+}
+
+.btn-start:hover {
+  background-color: #4a968c;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(90, 178, 168, 0.4);
 }
 </style>
