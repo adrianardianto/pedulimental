@@ -170,6 +170,35 @@ const article = contents.find(c => c.id == articleId) || {
   duration: "-"
 };
 
+import { onMounted } from "vue";
+
+onMounted(() => {
+  if (article.id) {
+    const historyItem = {
+      id: Date.now(),
+      date: new Date().toISOString().split('T')[0],
+      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+      type: "Edukasi",
+      title: article.title,
+      // Create a short description from full content (strip HTML) or use existing description
+      desc: article.description || "Membaca artikel edukasi kesehatan mental.",
+      articleId: article.id,
+      link: "Baca Lagi",
+      action: "Bagikan"
+    };
+
+    const saved = localStorage.getItem("pedulimental_article_history");
+    const history = saved ? JSON.parse(saved) : [];
+
+    // Optional: Check if the last entry is the same to avoid duplicates on refresh
+    const lastEntry = history[history.length - 1];
+    if (!lastEntry || lastEntry.articleId !== article.id) {
+       history.push(historyItem);
+       localStorage.setItem("pedulimental_article_history", JSON.stringify(history));
+    }
+  }
+});
+
 </script>
 
 <template>
