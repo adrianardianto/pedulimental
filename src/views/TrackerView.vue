@@ -103,6 +103,23 @@ const finishSurvey = () => {
   calculateResult();
   isFinished.value = true;
   progress.value = 100;
+
+  // Save to history
+  const historyItem = {
+    id: Date.now(),
+    date: new Date().toISOString().split('T')[0],
+    time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
+    type: "Tracker",
+    title: "Tracker Kesehatan Mental",
+    resultLevel: resultLevel.value,
+    desc: `Hasil pengecekan: Tingkat Stress ${resultLevel.value}`,
+    action: "Isi Ulang"
+  };
+
+  const saved = localStorage.getItem("pedulimental_tracker_history");
+  const history = saved ? JSON.parse(saved) : [];
+  history.push(historyItem);
+  localStorage.setItem("pedulimental_tracker_history", JSON.stringify(history));
 };
 
 const calculateResult = () => {
