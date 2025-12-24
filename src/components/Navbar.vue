@@ -10,7 +10,7 @@ const user = ref(null);
 const isProfileMenuOpen = ref(false);
 
 const checkLoginStatus = () => {
-  const userData = localStorage.getItem("user");
+  const userData = sessionStorage.getItem("user") || localStorage.getItem("user");
   if (userData) {
     isLoggedIn.value = true;
     user.value = JSON.parse(userData);
@@ -22,6 +22,7 @@ const checkLoginStatus = () => {
 
 const handleLogout = () => {
   localStorage.removeItem("user");
+  sessionStorage.removeItem("user");
   isLoggedIn.value = false;
   user.value = null;
   isProfileMenuOpen.value = false;

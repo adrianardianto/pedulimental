@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, onMounted, onUnmounted } from "vue";
 import Navbar from "../components/Navbar.vue";
 import {
   Search,
@@ -14,6 +14,7 @@ import {
 
 // State
 const searchQuery = ref("");
+const currentUser = ref(null);
 
 const groups = ref([
   {
@@ -70,14 +71,8 @@ const activeGroupTab = ref('explore'); // 'explore' | 'joined'
 const selectedGroup = ref(null);
 const newMessageInput = ref("");
 const messagesByGroup = ref({
-  1: [ // Anxiety Group
-    { id: 1, user: "Sarah", text: "Halo semuanya! Ada yang punya tips mengatasi anxiety saat kerja?", time: "10:30", isMe: false, avatar: "linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)" },
-    { id: 2, user: "Budi", text: "Biasanya aku coba teknik pernapasan 4-7-8, ampuh banget.", time: "10:32", isMe: false, avatar: "linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%)" },
-    { id: 3, user: "Anda", text: "Wah, boleh dicoba tuh. Makasih sarannya!", time: "10:35", isMe: true, avatar: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)" },
-  ],
-  2: [ // Mindfulness Group
-    { id: 1, user: "Dina", text: "Meditasi pagi ini sangat menenangkan.", time: "07:00", isMe: false, avatar: "linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)" },
-  ],
+  1: [], // Anxiety Group
+  2: [], // Mindfulness Group
   3: [], // Work-Life Balance
   4: [], // Self-Care Warriors
 });
@@ -87,7 +82,12 @@ const currentGroupMessages = computed(() => {
   if (!messagesByGroup.value[selectedGroup.value.id]) {
     messagesByGroup.value[selectedGroup.value.id] = [];
   }
-  return messagesByGroup.value[selectedGroup.value.id];
+  
+  // Dynamically determine isMe based on currentUser
+  return messagesByGroup.value[selectedGroup.value.id].map(msg => ({
+      ...msg,
+      isMe: msg.senderEmail === currentUser.value?.email || (msg.isMe === true && !msg.senderEmail) // Fallback or strict check
+  }));
 });
 
 const filteredGroups = computed(() => {
@@ -105,15 +105,51 @@ const filteredGroups = computed(() => {
   return result;
 });
 
+const saveData = () => {
+  const joinedGroupIds = groups.value.filter(g => g.isJoined).map(g => g.id);
+  const data = {
+    joinedGroupIds,
+    messages: messagesByGroup.value
+  };
+  localStorage.setItem("pedulimental_community_data", JSON.stringify(data));
+};
+
+const loadData = () => {
+  const saved = localStorage.getItem("pedulimental_community_data");
+  if (saved) {
+    try {
+      const parsed = JSON.parse(saved);
+      
+      // Restore joined status
+      if (parsed.joinedGroupIds && Array.isArray(parsed.joinedGroupIds)) {
+        groups.value.forEach(g => {
+          if (parsed.joinedGroupIds.includes(g.id)) {
+            g.isJoined = true;
+          }
+        });
+      }
+      
+      // Restore messages
+      if (parsed.messages) {
+        messagesByGroup.value = { ...messagesByGroup.value, ...parsed.messages };
+      }
+    } catch (e) {
+      console.error("Failed to load community data", e);
+    }
+  }
+};
+
 const toggleJoin = (group) => {
   group.isJoined = !group.isJoined;
+  saveData();
 };
 
 const openChat = (group) => {
   if (group.isJoined) {
     selectedGroup.value = group;
+    // Auto scroll when opening
+    setTimeout(scrollToBottom, 100);
   } else {
-    // Optional: Prompt to join first
     alert("Silakan gabung grup terlebih dahulu untuk memulai chat.");
   }
 };
@@ -122,29 +158,63 @@ const closeChat = () => {
   selectedGroup.value = null;
 };
 
+const scrollToBottom = () => {
+    const chatContainer = document.querySelector('.chat-messages');
+    if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
+};
+
 const sendMessage = () => {
   if (newMessageInput.value.trim() && selectedGroup.value) {
     if (!messagesByGroup.value[selectedGroup.value.id]) {
       messagesByGroup.value[selectedGroup.value.id] = [];
     }
     
+    // Use current user info
+    const sender = currentUser.value || { name: 'Anda', email: 'anon@demo.com', avatar: null };
+    
     messagesByGroup.value[selectedGroup.value.id].push({
       id: Date.now(),
-      user: "Anda",
+      user: sender.name,
+      senderEmail: sender.email,
       text: newMessageInput.value,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      isMe: true,
-      avatar: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
+      avatar: sender.avatar || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
     });
     newMessageInput.value = "";
     
-    // Auto scroll to bottom (simple implementation)
-    setTimeout(() => {
-      const chatContainer = document.querySelector('.chat-messages');
-      if (chatContainer) chatContainer.scrollTop = chatContainer.scrollHeight;
-    }, 100);
+    saveData();
+    setTimeout(scrollToBottom, 100);
   }
 };
+
+const loadUser = () => {
+    const sessionUser = sessionStorage.getItem("user");
+    const localUser = localStorage.getItem("user");
+    if(sessionUser) {
+        currentUser.value = JSON.parse(sessionUser);
+    } else if(localUser) {
+        currentUser.value = JSON.parse(localUser);
+    } else {
+        // Default Mock User
+        currentUser.value = { name: "Anda", email: "anda@demo.com", avatar: null };
+    }
+};
+
+const handleStorageEvent = (e) => {
+    if (e.key === "pedulimental_community_data") {
+        loadData();
+    }
+};
+
+onMounted(() => {
+  loadUser();
+  loadData();
+  window.addEventListener('storage', handleStorageEvent);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('storage', handleStorageEvent);
+});
 </script>
 
 <template>
@@ -195,30 +265,32 @@ const sendMessage = () => {
             <p v-else>Tidak ada komunitas ditemukan.</p>
           </div>
           
-          <div v-for="group in filteredGroups" :key="group.id" class="group-card" @click="activeGroupTab === 'joined' ? openChat(group) : null" :class="{ 'clickable': activeGroupTab === 'joined' }">
+          <div v-for="group in filteredGroups" :key="group.id" class="group-card" :class="{ 'clickable': activeGroupTab === 'joined' }">
             <div class="card-header" :style="{ background: group.gradient }">
-              <div class="type-badge">
-                <Users :size="16" />
-                <span>Grup</span>
+              <div class="header-badge member-badge">
+                <Users :size="14" />
+                <span>{{ group.memberCount }}</span>
+              </div>
+              <div v-if="group.isJoined" class="header-badge status-badge">
+                <span>Tergabung</span>
               </div>
             </div>
             
             <div class="card-body">
-              <div class="meta-top">
-                <span class="member-count">{{ group.memberCount }} Anggota</span>
-                <span v-if="group.isJoined" class="status-text joined">Tergabung</span>
-              </div>
-
               <h3 class="group-name">{{ group.name }}</h3>
               <p class="group-desc">{{ group.description }}</p>
 
               <div class="card-footer">
+                 <div v-if="group.isJoined" class="action-buttons">
+                    <button class="btn-chat" @click="openChat(group)">BUKA CHAT</button>
+                    <button class="btn-leave" @click.stop="toggleJoin(group)">KELUAR</button>
+                 </div>
                  <button
+                  v-else
                   class="join-btn"
-                  :class="{ joined: group.isJoined }"
                   @click.stop="toggleJoin(group)"
                 >
-                  {{ group.isJoined ? "KELUAR" : "GABUNG" }}
+                  GABUNG
                 </button>
               </div>
             </div>
@@ -435,21 +507,28 @@ const sendMessage = () => {
   width: 100%;
 }
 
-.type-badge {
+/* Card Header Badges */
+.header-badge {
   position: absolute;
   top: 16px;
-  left: 16px;
-  background: rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(4px);
+  background: white;
   padding: 6px 14px;
   border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 6px;
-  color: white;
+  color: #5ab2a8;
   font-size: 12px;
-  font-weight: 500;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.member-badge {
+  left: 16px;
+}
+
+.status-badge {
+  right: 16px;
 }
 
 .card-body {
@@ -459,26 +538,7 @@ const sendMessage = () => {
   flex: 1;
 }
 
-.meta-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-  font-size: 12px;
-}
-
-.member-count {
-  color: #5ab2a8;
-  font-weight: 600;
-}
-
-.status-text.joined {
-  color: #5ab2a8;
-  background: #ecfdf5;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-weight: 600;
-}
+/* Removed .meta-top styles */
 
 .group-name {
   font-size: 18px;
@@ -491,7 +551,7 @@ const sendMessage = () => {
 .group-desc {
   font-size: 14px;
   color: #64748b;
-  margin-bottom: 20px;
+  margin-bottom: 24px; /* More space before buttons */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -504,9 +564,63 @@ const sendMessage = () => {
   margin-top: auto;
 }
 
+/* Action Buttons */
+.action-buttons {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 12px;
+}
+
+.btn-chat {
+  background: #5ab2a8;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+
+.btn-chat:hover {
+  background: #4a968c;
+}
+
+.btn-leave {
+  background: white;
+  color: #64748b;
+  border: 1px solid #cbd5e1;
+  padding: 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+
+.btn-leave:hover {
+  border-color: #94a3b8;
+  color: #475569;
+}
+
 .join-btn {
   width: 100%;
-  padding: 10px 0;
+  padding: 12px 0;
+  background: white;
+  border: 2px solid #5ab2a8;
+  color: #5ab2a8;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.join-btn:hover {
+  background: #f0fdf9;
 }
 
 @media (max-width: 600px) {

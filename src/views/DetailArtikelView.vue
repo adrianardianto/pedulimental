@@ -1,9 +1,20 @@
 <script setup>
 import { useRoute } from "vue-router";
+import { onMounted, ref } from "vue";
 import Navbar from "../components/Navbar.vue";
 import { BookOpen, User, Calendar, ArrowLeft, PlayCircle } from "lucide-vue-next";
 
 const route = useRoute();
+const currentUser = ref(null);
+
+const getCurrentUser = () => {
+   const sessionUser = sessionStorage.getItem("user");
+   const localUser = localStorage.getItem("user");
+   if (sessionUser) return JSON.parse(sessionUser);
+   if (localUser) return JSON.parse(localUser);
+   return null;
+};
+
 // Parse ID from "artikel1" -> 1
 const paramId = route.params.id;
 const articleId = paramId ? paramId.replace('artikel', '') : null;
@@ -170,9 +181,9 @@ const article = contents.find(c => c.id == articleId) || {
   duration: "-"
 };
 
-import { onMounted } from "vue";
-
 onMounted(() => {
+  currentUser.value = getCurrentUser();
+
   if (article.id) {
     const historyItem = {
       id: Date.now(),
@@ -184,7 +195,8 @@ onMounted(() => {
       desc: article.description || "Membaca artikel edukasi kesehatan mental.",
       articleId: article.id,
       link: "Baca Lagi",
-      action: "Bagikan"
+      action: "Bagikan",
+      userEmail: currentUser.value?.email
     };
 
     const saved = localStorage.getItem("pedulimental_article_history");

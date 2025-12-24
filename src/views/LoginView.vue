@@ -28,6 +28,7 @@ const handleLogin = async () => {
              };
              
              localStorage.setItem("user", JSON.stringify(user));
+             sessionStorage.setItem("user", JSON.stringify(user));
              
              // Dispatch event for Navbar to update
              window.dispatchEvent(new Event("user-login"));
@@ -108,28 +109,25 @@ const handleLogin = async () => {
 <style scoped>
 .login-container {
   min-height: 100vh;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #f0fdf9;
-  padding: 20px;
+  width: 100%;
+  padding: 0;
+  background-color: white;
 }
 
 .login-wrapper {
-  background: white;
   width: 100%;
-  max-width: 900px;
+  min-height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
-  border-radius: 24px;
-  overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  margin: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 /* Brand Section */
 .brand-section {
   background: linear-gradient(135deg, #5AB2A8 0%, #4a968c 100%);
-  padding: 48px;
+  padding: 64px;
   color: white;
   display: flex;
   flex-direction: column;
@@ -139,16 +137,17 @@ const handleLogin = async () => {
 }
 
 .brand-title {
-  font-size: 32px;
+  font-size: 48px;
   font-weight: 800;
-  margin-bottom: 8px;
+  margin-bottom: 16px;
   z-index: 10;
 }
 
 .brand-subtitle {
-  font-size: 16px;
+  font-size: 20px;
   opacity: 0.9;
   z-index: 10;
+  max-width: 80%;
 }
 
 .illustration-placeholder {
@@ -166,45 +165,52 @@ const handleLogin = async () => {
 }
 
 .c1 {
-  width: 300px;
-  height: 300px;
-  bottom: -50px;
-  left: -50px;
+  width: 400px;
+  height: 400px;
+  bottom: -100px;
+  left: -100px;
 }
 
 .c2 {
-  width: 200px;
-  height: 200px;
+  width: 300px;
+  height: 300px;
   top: 50px;
-  right: -20px;
+  right: -50px;
 }
 
 /* Form Section */
 .form-section {
-  padding: 48px;
+  padding: 64px;
   display: flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center; /* Center horizontally effectively */
+}
+
+/* Limit form width inside the full section */
+.login-form, .form-header {
+  width: 100%;
+  max-width: 480px; 
 }
 
 .form-header {
-  margin-bottom: 32px;
+  margin-bottom: 40px;
 }
 
 .form-header h2 {
-  font-size: 24px;
+  font-size: 32px;
   font-weight: 700;
   color: #1e293b;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .form-header p {
   color: #64748b;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 24px;
 }
 
 .form-group label {
@@ -223,28 +229,30 @@ const handleLogin = async () => {
 
 .input-icon {
   position: absolute;
-  left: 12px;
+  left: 16px;
   color: #94a3b8;
 }
 
 .input-wrapper input {
   width: 100%;
-  padding: 12px 40px;
+  padding: 16px 20px 16px 48px;
   border: 1px solid #e2e8f0;
   border-radius: 12px;
-  font-size: 14px;
+  font-size: 15px;
   transition: all 0.2s;
   outline: none;
+  background: #f8fafc;
 }
 
 .input-wrapper input:focus {
   border-color: #5AB2A8;
-  box-shadow: 0 0 0 3px rgba(90, 178, 168, 0.1);
+  background: white;
+  box-shadow: 0 0 0 4px rgba(90, 178, 168, 0.1);
 }
 
 .eye-btn {
   position: absolute;
-  right: 12px;
+  right: 16px;
   background: none;
   border: none;
   color: #94a3b8;
@@ -260,11 +268,11 @@ const handleLogin = async () => {
 .form-actions {
   display: flex;
   justify-content: flex-end;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
 }
 
 .forgot-password {
-  font-size: 13px;
+  font-size: 14px;
   color: #5AB2A8;
   text-decoration: none;
   font-weight: 600;
@@ -272,30 +280,35 @@ const handleLogin = async () => {
 
 .submit-btn {
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   background-color: #5AB2A8;
   color: white;
   border: none;
   border-radius: 12px;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s, transform 0.1s;
 }
 
 .submit-btn:hover {
   background-color: #4a968c;
 }
 
+.submit-btn:active {
+  transform: scale(0.99);
+}
+
 .submit-btn:disabled {
   background-color: #94a3b8;
   cursor: not-allowed;
+  transform: none;
 }
 
 .register-link {
   text-align: center;
-  margin-top: 24px;
-  font-size: 14px;
+  margin-top: 32px;
+  font-size: 15px;
   color: #64748b;
 }
 
@@ -308,25 +321,110 @@ const handleLogin = async () => {
 .error-alert {
     background-color: #fee2e2;
     color: #ef4444;
-    padding: 10px;
-    border-radius: 8px;
-    font-size: 13px;
-    margin-bottom: 20px;
+    padding: 14px;
+    border-radius: 12px;
+    font-size: 14px;
+    margin-bottom: 24px;
     text-align: center;
+    font-weight: 500;
+}
+
+@media (max-width: 900px) {
+  .brand-title {
+    font-size: 36px;
+  }
 }
 
 @media (max-width: 768px) {
   .login-wrapper {
     grid-template-columns: 1fr;
-    max-width: 450px;
+    grid-template-rows: auto 1fr; /* Stack: Brand top, Form bottom */
   }
   
   .brand-section {
-    display: none;
+    display: flex; /* Show it! */
+    min-height: 250px;
+    padding: 32px;
+    align-items: center;
+    text-align: center;
+  }
+
+  .brand-title {
+    font-size: 32px;
+  }
+
+  .brand-subtitle {
+     max-width: 100%;
+  }
+  
+  /* Adjust circles for horizontal header */
+  .c1 {
+    width: 200px;
+    height: 200px;
+    bottom: -50px;
+    left: -50px;
+  }
+
+  .c2 {
+    width: 150px;
+    height: 150px;
+    top: -20px;
+    right: -20px;
   }
   
   .form-section {
     padding: 32px;
+    justify-content: flex-start;
+    padding-top: 40px;
+    min-height: auto; /* Allow scrolling if needed, don't force full height */
+    background: white;
+    border-top-left-radius: 24px;
+    border-top-right-radius: 24px;
+    margin-top: -20px; /* Overlap effect */
+    z-index: 20;
+    position: relative;
+  }
+
+  .form-header h2 {
+    font-size: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .brand-section {
+    min-height: 220px;
+    padding: 24px;
+  }
+
+  .brand-title {
+    font-size: 28px;
+  }
+
+  .form-section {
+    padding: 24px;
+    padding-top: 32px;
+  }
+
+  .form-header {
+    margin-bottom: 24px;
+  }
+
+  .form-header h2 {
+    font-size: 24px;
+  }
+
+  .form-header p {
+    font-size: 14px;
+  }
+
+  .input-wrapper input {
+    padding: 14px 16px 14px 44px;
+    font-size: 14px;
+  }
+
+  .submit-btn {
+    padding: 14px;
+    font-size: 14px;
   }
 }
 </style>
