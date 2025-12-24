@@ -4,6 +4,7 @@ import { useRoute } from "vue-router";
 import Navbar from "../components/Navbar.vue";
 import { Star, Calendar, Clock, CheckCircle, GraduationCap, Briefcase, Video } from "lucide-vue-next";
 import VideoCallModal from "../components/VideoCallModal.vue";
+import PaymentModal from "../components/PaymentModal.vue";
 
 const activeMenu = ref("Konsultan Tersedia");
 const selectedConsultant = ref(null);
@@ -13,6 +14,7 @@ const mySchedule = ref([]);
 
 const consultationHistory = ref([]);
 const showVideoCall = ref(false);
+const showPaymentModal = ref(false);
 const activeAppointment = ref(null);
 
 const route = useRoute();
@@ -73,20 +75,26 @@ const closeDetailPanel = () => {
 
 const confirmBooking = () => {
   if (bookingDate.value && bookingTime.value && selectedConsultant.value) {
-    const newAppointment = {
-      id: Date.now(),
-      consultant: selectedConsultant.value,
-      date: bookingDate.value,
-      time: bookingTime.value,
-      status: 'upcoming'
-    };
-    
-    mySchedule.value.push(newAppointment);
-    saveAppointments();
-    alert("Jadwal konsultasi berhasil dibuat!");
-    closeDetailPanel();
-    activeMenu.value = "Jadwal Saya";
+    showPaymentModal.value = true;
   }
+};
+
+const handlePaymentSuccess = () => {
+  showPaymentModal.value = false;
+  
+  const newAppointment = {
+    id: Date.now(),
+    consultant: selectedConsultant.value,
+    date: bookingDate.value,
+    time: bookingTime.value,
+    status: 'upcoming'
+  };
+  
+  mySchedule.value.push(newAppointment);
+  saveAppointments();
+  // Alert handled by modal success state, but we can do extra cleanup
+  closeDetailPanel();
+  activeMenu.value = "Jadwal Saya";
 };
 
 const finishConsultation = (appointment) => {
@@ -328,6 +336,15 @@ onMounted(() => {
       :is-visible="showVideoCall"
       :recipient-name="activeAppointment?.consultant?.name || 'Doctor'"
       @close="endVideoCall"
+    />
+
+    <PaymentModal
+      :is-visible="showPaymentModal"
+      :amount="selectedConsultant?.price || 'Rp 0'"
+      title="Pembayaran Konsultasi"
+      description="Silakan selesaikan pembayaran untuk konfirmasi jadwal Anda."
+      @close="showPaymentModal = false"
+      @success="handlePaymentSuccess"
     />
   </div>
 </template>
