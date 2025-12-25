@@ -1,38 +1,78 @@
-# pedulimental
+# PeduliMental 🧠
 
-This template should help get you started developing with Vue 3 in Vite.
+PeduliMental adalah platform kesehatan mental komprehensif yang dirancang untuk membantu pengguna menjaga kesejahteraan mental mereka melalui edukasi, pemantauan mandiri, dukungan komunitas, dan konsultasi profesional.
 
-## Recommended IDE Setup
+## 🌟 Fitur Utama
 
-[VS Code](https://code.visualstudio.com/) + [Vue (Official)](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+- **Edukasi**: Akses berbagai artikel dan informasi terpercaya seputar kesehatan mental.
+- **Mental Health Tracker**: Survey singkat mendalam untuk mengetahui tingkat stres dan kecemasan Anda, lengkap dengan rekomendasi yang dipersonalisasi.
+- **Komunitas Suportif**: Bergabung dengan grup diskusi berdasarkan topik (seperti Anxiety, Mindfulness, Work-Life Balance) dan saling berbagi dukungan.
+- **Konsultasi**: Terhubung dengan psikolog profesional (Coming Soon/Feature).
+- **Riwayat Aktivitas**: Pantau perkembangan kesehatan mental Anda melalui riwayat tracker dan konsultasi.
 
-## Recommended Browser Setup
+## 🛠️ Teknologi yang Digunakan
 
-- Chromium-based browsers (Chrome, Edge, Brave, etc.):
-  - [Vue.js devtools](https://chromewebstore.google.com/detail/vuejs-devtools/nhdogjmejiglipccpnnnanhbledajbpd) 
-  - [Turn on Custom Object Formatter in Chrome DevTools](http://bit.ly/object-formatters)
-- Firefox:
-  - [Vue.js devtools](https://addons.mozilla.org/en-US/firefox/addon/vue-js-devtools/)
-  - [Turn on Custom Object Formatter in Firefox DevTools](https://fxdx.dev/firefox-devtools-custom-object-formatters/)
+Project ini dibangun menggunakan teknologi web modern:
 
-## Customize configuration
+- **Framework**: [Vue.js 3](https://vuejs.org/) (Composition API)
+- **Build Tool**: [Vite](https://vitejs.dev/)
+- **Routing**: [Vue Router 4](https://router.vuejs.org/)
+- **Icons**: [Lucide Vue Next](https://lucide.dev/)
+- **Real-time Communication**: [PeerJS](https://peerjs.com/) (untuk fitur konsultasi video)
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+## 🚀 Cara Menjalankan Project
 
-## Project Setup
+Ikuti langkah-langkah berikut untuk menjalankan project ini di komputer Anda:
 
-```sh
-npm install
-```
+### Prasyarat
 
-### Compile and Hot-Reload for Development
+- Node.js (versi 16.0 atau lebih baru direkomendasikan)
+- npm (bawaan Node.js)
+
+### Instalasi
+
+1. **Clone repository ini** (jika belum):
+
+   ```sh
+   git clone https://github.com/username/pedulimental.git
+   cd pedulimental
+   ```
+
+2. **Install dependencies**:
+   ```sh
+   npm install
+   ```
+
+### Development
+
+Untuk menjalankan server development dengan fitur Hot Module Replacement (HMR):
 
 ```sh
 npm run dev
 ```
 
-### Compile and Minify for Production
+Aplikasi akan berjalan di `http://localhost:5173` (atau port lain yang tersedia).
+
+### Production Build
+
+Untuk mem-build aplikasi untuk production:
 
 ```sh
 npm run build
 ```
+
+Hasil build akan berada di folder `dist`.
+
+Untuk melihat preview hasil build secara lokal (simulasi production):
+
+```sh
+npm run preview
+```
+
+## 🤝 Kontribusi
+
+Kontribusi selalu diterima! Silakan buat _Pull Request_ atau laporkan _Issues_ jika Anda menemukan masalah.
+
+---
+
+Dibuat dengan ❤️ untuk kesehatan mental Indonesia.
