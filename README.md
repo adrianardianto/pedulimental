@@ -4,21 +4,33 @@ PeduliMental adalah platform kesehatan mental komprehensif yang dirancang untuk 
 
 ## 🌟 Fitur Utama
 
-- **Edukasi**: Akses berbagai artikel dan informasi terpercaya seputar kesehatan mental.
-- **Mental Health Tracker**: Survey singkat mendalam untuk mengetahui tingkat stres dan kecemasan Anda, lengkap dengan rekomendasi yang dipersonalisasi.
-- **Komunitas Suportif**: Bergabung dengan grup diskusi berdasarkan topik (seperti Anxiety, Mindfulness, Work-Life Balance) dan saling berbagi dukungan.
-- **Konsultasi**: Terhubung dengan psikolog profesional (Coming Soon/Feature).
-- **Riwayat Aktivitas**: Pantau perkembangan kesehatan mental Anda melalui riwayat tracker dan konsultasi.
+- **Edukasi**: Akses berbagai artikel dan video edukasi seputar kesehatan mental dengan riwayat baca tersimpan.
+- **Mental Health Tracker**: Evaluasi kesehatan mental Anda dengan pelacakan riwayat yang terhubung personal ke akun Anda.
+- **Komunitas Suportif**: Gabung dalam grup diskusi, kirim pesan, dan bangun koneksi yang aman. Status keanggotaan dan chat tersimpan per user.
+- **Konsultasi**: Jadwalkan sesi dengan psikolog, lakukan pembayaran simulasi, dan jalankan **Video Call** langsung di platform.
+- **Riwayat Terintegrasi**: Pantau semua aktivitas (Konsultasi, Tracker, Edukasi) dalam satu halaman history yang terpusat.
 
-## 🛠️ Teknologi yang Digunakan
+## � Desain Responsif (Mobile, Tablet, & Desktop Support)
+
+Aplikasi ini dibangun dengan pendekatan **Responsive Design** yang memastikan pengalaman pengguna tetap optimal di berbagai perangkat:
+
+- **Smartphone**: Tampilan adaptif yang nyaman digenggam, menu navigasi yang ramah jari, dan layout yang rapi.
+- **Tablet**: Layout yang menyesuaikan diri dengan baik pada layar medium, baik dalam mode portrait maupun landscape.
+- **Desktop/Laptop**: Tampilan luas yang memanfaatkan lebar layar secara maksimal tanpa mengorbankan keterbacaan.
+
+Semua fitur (Konsultasi Video, Edukasi, Dashboard) dapat diakses dengan lancar tanpa kendala tampilan di perangkat apa pun.
+
+## �🛠️ Teknologi yang Digunakan
 
 Project ini dibangun menggunakan teknologi web modern:
 
 - **Framework**: [Vue.js 3](https://vuejs.org/) (Composition API)
 - **Build Tool**: [Vite](https://vitejs.dev/)
+- **State Management**: [Pinia](https://pinia.vuejs.org/) (Centralized Store)
 - **Routing**: [Vue Router 4](https://router.vuejs.org/)
 - **Icons**: [Lucide Vue Next](https://lucide.dev/)
 - **Real-time Communication**: [PeerJS](https://peerjs.com/) (untuk fitur konsultasi video)
+- **Data Persistence**: LocalStorage (dengan isolasi data per User/Email)
 
 ## 🚀 Cara Menjalankan Project
 
@@ -34,7 +46,7 @@ Ikuti langkah-langkah berikut untuk menjalankan project ini di komputer Anda:
 1. **Clone repository ini** (jika belum):
 
    ```sh
-   git clone https://github.com/username/pedulimental.git
+   git clone https://github.com/adrianardianto/pedulimental.git
    cd pedulimental
    ```
 
@@ -75,4 +87,4 @@ Kontribusi selalu diterima! Silakan buat _Pull Request_ atau laporkan _Issues_ j
 
 ---
 
-Dibuat dengan ❤️ untuk kesehatan mental Indonesia.
+Dibuat dengan hati untuk kesehatan mental semester akhir
