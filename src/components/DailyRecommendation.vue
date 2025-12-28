@@ -3,53 +3,32 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import { ChevronLeft, ChevronRight } from 'lucide-vue-next';
 
+import { useEducationStore } from '../stores/education';
+
+const educationStore = useEducationStore();
 const router = useRouter();
 const currentIndex = ref(0);
 
-// Data copied from EdukasiView.vue for consistency
-const recommendations = [
-  {
-    id: 1,
-    tag: 'Artikel',
-    title: 'Mengelola Stres di Tempat Kerja',
-    desc: 'Stres kerja adalah hal yang umum dialami. Pelajari strategi efektif untuk mengelola stres',
-    gradient: 'linear-gradient(135deg, #a2d2cd 0%, #8ec5eb 100%)',
-    contentId: 'artikel1'
-  },
-  {
-    id: 2,
-    tag: 'Video',
-    title: 'Pentingnya Self-Care untuk Kesehatan Mental',
-    desc: 'Self-care bukan tentang mementingkan diri sendiri, tetapi tentang merawat diri agar dapat berfungsi optimal.',
-    gradient: 'linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)',
-    contentId: 'artikel2' 
-  },
-  {
-    id: 3,
-    tag: 'Artikel',
-    title: 'Teknik Mindfulness untuk Pemula',
-    desc: 'Mindfulness adalah praktik sederhana yang dapat membantu mengurangi kecemasan.',
-    gradient: 'linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%)',
-    contentId: 'artikel3'
-  },
-  {
-    id: 4,
-    tag: 'Artikel',
-    title: 'Memahami dan Mengatasi Anxiety',
-    desc: 'Pelajari cara mengenali gejala dan teknik mengatasi gangguan kecemasan.',
-    gradient: 'linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%)',
-    contentId: 'artikel4'
-  }
-];
+// Ambil 4 item pertama dari store untuk rekomendasi
+const recommendations = computed(() => {
+  return educationStore.contents.slice(0, 4).map(item => ({
+    id: item.id,
+    tag: item.type,
+    title: item.title,
+    desc: item.description,
+    image: item.image,
+    // Fallback gradien jika tidak ada gambar
+    gradient: 'linear-gradient(135deg, #a2d2cd 0%, #8ec5eb 100%)', 
+    contentId: `artikel${item.id}`
+  }));
+});
 
-const currentItem = computed(() => recommendations[currentIndex.value]);
-
+const currentItem = computed(() => recommendations.value[currentIndex.value]);
 const nextSlide = () => {
-  currentIndex.value = (currentIndex.value + 1) % recommendations.length;
+  currentIndex.value = (currentIndex.value + 1) % recommendations.value.length;
 };
-
 const prevSlide = () => {
-  currentIndex.value = (currentIndex.value - 1 + recommendations.length) % recommendations.length;
+  currentIndex.value = (currentIndex.value - 1 + recommendations.value.length) % recommendations.value.length;
 };
 
 const goToSlide = (index) => {
@@ -74,7 +53,7 @@ const readMore = () => {
 
       <Transition name="fade" mode="out-in">
         <div :key="currentIndex" class="recommendation-card">
-          <div class="card-image" :style="{ background: currentItem.gradient }"></div>
+<div class="card-image" :style="currentItem.image ? { backgroundImage: `url(${currentItem.image})` } : { background: currentItem.gradient }"></div>
           <div class="card-content">
             <span class="tag">{{ currentItem.tag }}</span>
             <h3 class="card-title">{{ currentItem.title }}</h3>
@@ -153,7 +132,7 @@ const readMore = () => {
   overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
   display: flex;
-  min-height: 250px;
+  min-height: 400px;
 }
 
 .card-image {

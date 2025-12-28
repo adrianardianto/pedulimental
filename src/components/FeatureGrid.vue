@@ -29,7 +29,7 @@ const features = [
     icon: TrendingUp,
     color: "#FFB74D",
     bgColor: "#FFF3E0",
-    route: "/tracker", // Assuming Tracker maps to Survey route for now or new route
+    route: "/tracker", // Mengarah ke route Tracker
   },
   {
     id: 4,

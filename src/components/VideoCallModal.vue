@@ -26,8 +26,7 @@ let localStream = null
 let currentCall = null
 
 const initializePeer = () => {
-    // Determine if we are in a secure context (HTTPS or localhost)
-    // PeerJS usually needs secure context for WebRTC
+    // PeerJS biasanya butuh konteks aman (HTTPS atau localhost) untuk WebRTC
     peer.value = new Peer()
 
     peer.value.on('open', (id) => {
@@ -36,8 +35,7 @@ const initializePeer = () => {
     })
 
     peer.value.on('call', (call) => {
-        // Answer incoming call automatically or prompt user?
-        // For now, let's answer automatically with local stream
+        // Jawab panggilan otomatis dengan stream lokal
         callStatus.value = 'Incoming call...'
         
         navigator.mediaDevices.getUserMedia({ video: true, audio: true })
@@ -45,7 +43,7 @@ const initializePeer = () => {
                 localStream = stream
                 if(localVideo.value) localVideo.value.srcObject = stream
                 
-                call.answer(stream) // Answer the call with an A/V stream.
+                call.answer(stream) // Jawab panggilan dengan stream video/audio
                 currentCall = call
                 
                 handleCallStream(call)
@@ -143,12 +141,9 @@ const copyToClipboard = () => {
     alert('ID copied to clipboard!')
 }
 
-onMounted(() => {
+    onMounted(() => {
     initializePeer()
     
-    // Get local preview immediately if desired, or wait for call
-    // Let's get it strictly when calling/receiving to save resources, 
-    // or maybe shows preview immediately? Let's show preview immediately.
     navigator.mediaDevices.getUserMedia({ video: true, audio: true })
         .then((stream) => {
             localStream = stream

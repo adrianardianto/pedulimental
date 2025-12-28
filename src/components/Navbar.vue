@@ -8,7 +8,7 @@ import { storeToRefs } from "pinia";
 const router = useRouter();
 const authStore = useAuthStore();
 
-// Destructure state to maintain reactivity
+// Destructure state untuk reaktivitas
 const { user, isLoggedIn } = storeToRefs(authStore);
 
 const isOpen = ref(false);
@@ -65,7 +65,7 @@ const closeMenu = () => {
           <div class="profile-trigger" @click="toggleProfileMenu">
             <div class="profile-icon">
               <!-- <User :size="20" stroke-width="2.5" /> -->
-              <!-- Use user avatar if available or initial -->
+              <!-- Gunakan avatar user atau inisial -->
               <span v-if="!user?.avatar" class="avatar-initial">{{ user?.name?.charAt(0) || 'U' }}</span>
               <img v-else :src="user.avatar" class="avatar-img" alt="User" />
             </div>

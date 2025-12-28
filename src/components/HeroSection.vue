@@ -7,7 +7,7 @@ onMounted(() => {
   const user = localStorage.getItem('user');
   if (user) {
     const userData = JSON.parse(user);
-    userName.value = userData.name.split(' ')[0]; // Get first name
+    userName.value = userData.name.split(' ')[0]; // Ambil nama depan
   }
 });
 </script>
@@ -25,7 +25,7 @@ onMounted(() => {
 .hero-section {
   background: linear-gradient(135deg, #5AB2A8 0%, #4A90E2 100%); /* Teal to Blue gradient attempt */
   background: linear-gradient(to right, #66c7ba, #5ab2a8, #7eb6d9); /* Adjusted to match image better */
-  padding: 60px 0 100px; /* Extra padding bottom for potential overlap or spacing */
+  padding: 100px 0 150px; /* Ditambah agar banner terlihat lebih panjang ke bawah */
   color: white;
   text-align: center;
 }

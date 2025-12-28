@@ -12,10 +12,10 @@ const props = defineProps({
 const emit = defineEmits(['close', 'success']);
 
 // State
-const step = ref('method-selection'); // method-selection, waiting-payment, processing, success
+const step = ref('method-selection'); // state langkah: method-selection, waiting-payment, processing, success
 const selectedMethod = ref(null);
 const isProcessing = ref(false);
-const timeLeft = ref(900); // 15 minutes in seconds
+const timeLeft = ref(900); // 15 menit dalam detik
 const selectedFile = ref(null);
 let timerInterval = null;
 
@@ -33,7 +33,7 @@ const handleFileChange = (e) => {
   }
 };
 
-// Timer Logic
+// Logika Timer
 const formatTime = (seconds) => {
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
@@ -69,12 +69,12 @@ const checkPaymentStatus = () => {
   isProcessing.value = true;
   step.value = 'processing';
   
-  // Simulate Payment Gateway Check
+  // Simulasi cek status pembayaran
   setTimeout(() => {
     isProcessing.value = false;
     step.value = 'success';
     
-    // Auto close
+    // Tutup otomatis
     setTimeout(() => {
         emit('success');
         resetState();
