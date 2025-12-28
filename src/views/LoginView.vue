@@ -2,8 +2,10 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { Eye, EyeOff, Lock, Mail } from "lucide-vue-next";
+import { useAuthStore } from "../stores/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 const email = ref("");
 const password = ref("");
 const showPassword = ref(false);
@@ -27,11 +29,8 @@ const handleLogin = async () => {
                  avatar: `https://ui-avatars.com/api/?name=${formattedName}&background=5AB2A8&color=fff`
              };
              
-             localStorage.setItem("user", JSON.stringify(user));
-             sessionStorage.setItem("user", JSON.stringify(user));
-             
-             // Dispatch event for Navbar to update
-             window.dispatchEvent(new Event("user-login"));
+             // Use Pinia Store
+             authStore.login(user);
              
              router.push("/");
         } else {
@@ -69,7 +68,14 @@ const handleLogin = async () => {
             <label>Email</label>
             <div class="input-wrapper">
                <Mail :size="20" class="input-icon" />
-               <input type="email" v-model="email" placeholder="contoh@email.com" required />
+               <input 
+                 type="email" 
+                 name="email"
+                 v-model="email" 
+                 placeholder="contoh@email.com" 
+                 required 
+                 autocomplete="email" 
+               />
             </div>
           </div>
 
@@ -77,7 +83,14 @@ const handleLogin = async () => {
             <label>Kata Sandi</label>
             <div class="input-wrapper">
                <Lock :size="20" class="input-icon" />
-               <input :type="showPassword ? 'text' : 'password'" v-model="password" placeholder="Masukan kata sandi" required />
+               <input 
+                 :type="showPassword ? 'text' : 'password'" 
+                 name="password"
+                 v-model="password" 
+                 placeholder="Masukan kata sandi" 
+                 required 
+                 autocomplete="current-password"
+               />
                <button type="button" class="eye-btn" @click="showPassword = !showPassword">
                  <component :is="showPassword ? EyeOff : Eye" :size="20" />
                </button>

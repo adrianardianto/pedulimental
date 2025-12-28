@@ -2,6 +2,9 @@
 import { ref, computed } from "vue";
 import Navbar from "../components/Navbar.vue";
 import { Heart, Clock, Check } from "lucide-vue-next";
+import { useTrackerStore } from "../stores/tracker";
+
+const trackerStore = useTrackerStore();
 
 const currentQuestion = ref(0);
 const selectedOption = ref(null);
@@ -105,7 +108,7 @@ const finishSurvey = () => {
   isFinished.value = true;
   progress.value = 100;
 
-  // Save to history
+  // Save to history via STORE
   const historyItem = {
     id: Date.now(),
     date: new Date().toISOString().split('T')[0],
@@ -117,10 +120,7 @@ const finishSurvey = () => {
     action: "Isi Ulang"
   };
 
-  const saved = localStorage.getItem("pedulimental_tracker_history");
-  const history = saved ? JSON.parse(saved) : [];
-  history.push(historyItem);
-  localStorage.setItem("pedulimental_tracker_history", JSON.stringify(history));
+  trackerStore.addRecord(historyItem);
 };
 
 const calculateResult = () => {

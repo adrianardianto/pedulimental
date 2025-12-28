@@ -3,34 +3,26 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import Navbar from "../components/Navbar.vue";
 import { User, Mail, Phone, Camera, Save } from "lucide-vue-next";
+import { useAuthStore } from "../stores/auth";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
-const user = ref({
-  name: "",
-  email: "",
-  phone: "",
-  avatar: ""
-});
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+
+// Make a local copy for editing to avoid direct mutation of store state before save
+const editForm = ref({ ...user.value });
 
 const isEditing = ref(false);
 const isLoading = ref(false);
-
-const checkLoginStatus = () => {
-  const userData = localStorage.getItem("user");
-  if (userData) {
-    const parsed = JSON.parse(userData);
-    user.value = { ...user.value, ...parsed };
-  } else {
-    router.push("/login"); // Redirect if not logged in
-  }
-};
 
 const handleFileChange = (event) => {
   const file = event.target.files[0];
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      user.value.avatar = e.target.result;
+      // Preview immediately in local form
+      editForm.value.avatar = e.target.result;
     };
     reader.readAsDataURL(file);
   }
@@ -40,17 +32,22 @@ const saveProfile = () => {
   isLoading.value = true;
   // Simulate API call
   setTimeout(() => {
-    localStorage.setItem("user", JSON.stringify(user.value));
+    // Update Store
+    authStore.updateUser(editForm.value);
+    
     isLoading.value = false;
     isEditing.value = false;
     alert("Profil berhasil diperbarui!");
-    // Emit event so Navbar updates
-    window.dispatchEvent(new Event("user-login"));
   }, 1000);
 };
 
+// Sync local form with store user when entering edit mode or mounting
 onMounted(() => {
-  checkLoginStatus();
+  if (!user.value) {
+      router.push("/login");
+  } else {
+      editForm.value = { ...user.value };
+  }
 });
 </script>
 
@@ -66,8 +63,8 @@ onMounted(() => {
         <div class="profile-header">
           <div class="avatar-wrapper">
             <div class="avatar-container">
-               <span v-if="!user.avatar" class="avatar-initial">{{ user.name.charAt(0) || 'U' }}</span>
-               <img v-else :src="user.avatar" class="avatar-img" alt="User Avatar" />
+               <span v-if="!editForm.avatar" class="avatar-initial">{{ editForm.name?.charAt(0) || 'U' }}</span>
+               <img v-else :src="editForm.avatar" class="avatar-img" alt="User Avatar" />
                
                <label v-if="isEditing" class="camera-btn">
                  <input type="file" accept="image/*" @change="handleFileChange" hidden />
@@ -76,14 +73,14 @@ onMounted(() => {
             </div>
           </div>
           <div class="header-info">
-             <h2 class="user-name">{{ user.name }}</h2>
-             <p class="user-email">{{ user.email }}</p>
+             <h2 class="user-name">{{ user?.name }}</h2>
+             <p class="user-email">{{ user?.email }}</p>
           </div>
           
           <button 
             class="edit-toggle-btn" 
             :class="{ 'cancel-mode': isEditing }"
-            @click="isEditing = !isEditing"
+            @click="isEditing = !isEditing; if(!isEditing) editForm = {...user}"
           >
             {{ isEditing ? 'Batal Edit' : 'Edit Profil' }}
           </button>
@@ -96,7 +93,7 @@ onMounted(() => {
               <User :size="16" class="icon" /> Nama Lengkap
             </label>
             <input 
-              v-model="user.name" 
+              v-model="editForm.name" 
               type="text" 
               class="form-input" 
               :disabled="!isEditing"
@@ -109,7 +106,7 @@ onMounted(() => {
               <Mail :size="16" class="icon" /> Email
             </label>
             <input 
-              v-model="user.email" 
+              v-model="editForm.email" 
               type="email" 
               class="form-input" 
               :disabled="!isEditing"
@@ -122,7 +119,7 @@ onMounted(() => {
               <Phone :size="16" class="icon" /> Nomor Telepon
             </label>
             <input 
-              v-model="user.phone" 
+              v-model="editForm.phone" 
               type="tel" 
               class="form-input" 
               :disabled="!isEditing"

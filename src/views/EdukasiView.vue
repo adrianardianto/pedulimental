@@ -3,11 +3,13 @@ import { ref, computed } from 'vue';
 import { useRouter } from 'vue-router';
 import Navbar from '../components/Navbar.vue';
 import { Search, BookOpen, Video, X } from 'lucide-vue-next';
+import { useEducationStore } from '../stores/education';
 
 // State
 const searchQuery = ref('');
 const activeFilter = ref('Semua');
 const router = useRouter();
+const educationStore = useEducationStore();
 
 // Constants
 const filters = [
@@ -115,7 +117,7 @@ const contents = [
     author: 'Dr. Budi Santoso',
     date: '28 Nov 2024',
     bgClass: 'bg-teal',
-     fullContent: `
+    fullContent: `
       <h2>Tanda-tanda Depresi</h2>
       <p>Jika Anda merasa sedih terus-menerus selama lebih dari dua minggu, Anda mungkin mengalami depresi.</p>
       <p>Gejala umum meliputi kehilangan minat pada aktivitas yang disukai, perubahan nafsu makan, dan gangguan tidur.</p>
@@ -139,6 +141,9 @@ const clearSearch = () => {
 };
 
 const openContent = (item) => {
+  // Add to Store History
+  educationStore.addToHistory(item);
+
   // Always open Detail Page, including for videos
   router.push({ name: 'detail-artikel', params: { id: `artikel${item.id}` } });
 };

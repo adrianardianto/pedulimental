@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed } from "vue";
 import Navbar from "../components/Navbar.vue";
 import {
   Search,
@@ -11,18 +11,25 @@ import {
   ArrowLeft,
   Send,
 } from "lucide-vue-next";
+import { useCommunityStore } from "../stores/community";
+import { useAuthStore } from "../stores/auth";
+import { storeToRefs } from "pinia";
+
+const communityStore = useCommunityStore();
+const authStore = useAuthStore();
+const { myJoinedGroupIds } = storeToRefs(communityStore);
 
 // State
 const searchQuery = ref("");
-const currentUser = ref(null);
+// Use authStore for current user
+const currentUser = computed(() => authStore.user || { name: 'Anda', email: '', avatar: null });
 
-const groups = ref([
+const staticGroups = [
   {
     id: 1,
     name: "Support Group untuk Anxiety",
     memberCount: 1234,
     description: "Ruang aman untuk berbagi pengalaman dan dukungan seputar kecemasan.",
-    isJoined: false,
     gradient: "linear-gradient(135deg, #81C7D4 0%, #A2D2CD 100%)"
   },
   {
@@ -30,7 +37,6 @@ const groups = ref([
     name: "Mindfulness & Meditation",
     memberCount: 892,
     description: "Belajar dan berlatih mindfulness bersama untuk ketenangan jiwa.",
-    isJoined: false,
     gradient: "linear-gradient(135deg, #A8D5BA 0%, #81C7D4 100%)"
   },
   { 
@@ -38,7 +44,6 @@ const groups = ref([
     name: "Work-Life Balance", 
     memberCount: 756, 
     description: "Diskusi tentang menyeimbangkan karir dan kehidupan pribadi.",
-    isJoined: false,
     gradient: "linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)"
   },
   { 
@@ -46,7 +51,6 @@ const groups = ref([
     name: "Self-Care Warriors", 
     memberCount: 1045, 
     description: "Tips dan motivasi untuk merawat diri sendiri setiap hari.",
-    isJoined: false,
     gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
   },
   { 
@@ -54,7 +58,6 @@ const groups = ref([
     name: "Parenting Journey", 
     memberCount: 654, 
     description: "Support system untuk orang tua dalam mengasuh anak dengan penuh kesadaran.",
-    isJoined: false,
     gradient: "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)"
   },
   { 
@@ -62,31 +65,29 @@ const groups = ref([
     name: "Career Stress Relief", 
     memberCount: 890, 
     description: "Berbagi tips dan dukungan untuk mengatasi tekanan di lingkungan kerja.",
-    isJoined: false,
     gradient: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)"
   },
-]);
+];
+
+const groups = computed(() => {
+    return staticGroups.map(g => ({
+        ...g,
+        isJoined: communityStore.isJoined(g.id)
+    }));
+});
 
 const activeGroupTab = ref('explore'); // 'explore' | 'joined'
 const selectedGroup = ref(null);
 const newMessageInput = ref("");
-const messagesByGroup = ref({
-  1: [], // Anxiety Group
-  2: [], // Mindfulness Group
-  3: [], // Work-Life Balance
-  4: [], // Self-Care Warriors
-});
 
 const currentGroupMessages = computed(() => {
   if (!selectedGroup.value) return [];
-  if (!messagesByGroup.value[selectedGroup.value.id]) {
-    messagesByGroup.value[selectedGroup.value.id] = [];
-  }
   
-  // Dynamically determine isMe based on currentUser
-  return messagesByGroup.value[selectedGroup.value.id].map(msg => ({
+  const messages = communityStore.getMessages(selectedGroup.value.id);
+  
+  return messages.map(msg => ({
       ...msg,
-      isMe: msg.senderEmail === currentUser.value?.email || (msg.isMe === true && !msg.senderEmail) // Fallback or strict check
+      isMe: msg.senderEmail === (currentUser.value?.email)
   }));
 });
 
@@ -105,43 +106,16 @@ const filteredGroups = computed(() => {
   return result;
 });
 
-const saveData = () => {
-  const joinedGroupIds = groups.value.filter(g => g.isJoined).map(g => g.id);
-  const data = {
-    joinedGroupIds,
-    messages: messagesByGroup.value
-  };
-  localStorage.setItem("pedulimental_community_data", JSON.stringify(data));
-};
-
-const loadData = () => {
-  const saved = localStorage.getItem("pedulimental_community_data");
-  if (saved) {
-    try {
-      const parsed = JSON.parse(saved);
-      
-      // Restore joined status
-      if (parsed.joinedGroupIds && Array.isArray(parsed.joinedGroupIds)) {
-        groups.value.forEach(g => {
-          if (parsed.joinedGroupIds.includes(g.id)) {
-            g.isJoined = true;
-          }
-        });
-      }
-      
-      // Restore messages
-      if (parsed.messages) {
-        messagesByGroup.value = { ...messagesByGroup.value, ...parsed.messages };
-      }
-    } catch (e) {
-      console.error("Failed to load community data", e);
-    }
-  }
-};
-
 const toggleJoin = (group) => {
-  group.isJoined = !group.isJoined;
-  saveData();
+  if (!currentUser.value.email) {
+      alert("Silakan login terlebih dahulu.");
+      return;
+  }
+  if (group.isJoined) {
+      communityStore.leaveGroup(group.id);
+  } else {
+      communityStore.joinGroup(group.id);
+  }
 };
 
 const openChat = (group) => {
@@ -165,56 +139,11 @@ const scrollToBottom = () => {
 
 const sendMessage = () => {
   if (newMessageInput.value.trim() && selectedGroup.value) {
-    if (!messagesByGroup.value[selectedGroup.value.id]) {
-      messagesByGroup.value[selectedGroup.value.id] = [];
-    }
-    
-    // Use current user info
-    const sender = currentUser.value || { name: 'Anda', email: 'anon@demo.com', avatar: null };
-    
-    messagesByGroup.value[selectedGroup.value.id].push({
-      id: Date.now(),
-      user: sender.name,
-      senderEmail: sender.email,
-      text: newMessageInput.value,
-      time: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true }),
-      avatar: sender.avatar || "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-    });
+    communityStore.sendMessage(selectedGroup.value.id, newMessageInput.value);
     newMessageInput.value = "";
-    
-    saveData();
     setTimeout(scrollToBottom, 100);
   }
 };
-
-const loadUser = () => {
-    const sessionUser = sessionStorage.getItem("user");
-    const localUser = localStorage.getItem("user");
-    if(sessionUser) {
-        currentUser.value = JSON.parse(sessionUser);
-    } else if(localUser) {
-        currentUser.value = JSON.parse(localUser);
-    } else {
-        // Default Mock User
-        currentUser.value = { name: "Anda", email: "anda@demo.com", avatar: null };
-    }
-};
-
-const handleStorageEvent = (e) => {
-    if (e.key === "pedulimental_community_data") {
-        loadData();
-    }
-};
-
-onMounted(() => {
-  loadUser();
-  loadData();
-  window.addEventListener('storage', handleStorageEvent);
-});
-
-onUnmounted(() => {
-    window.removeEventListener('storage', handleStorageEvent);
-});
 </script>
 
 <template>
@@ -646,6 +575,23 @@ onUnmounted(() => {
   margin: 0 auto;
 }
 
+@media (max-width: 768px) {
+  .chat-room {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 100vh;
+    border-radius: 0;
+    z-index: 2000; /* Ensure it's above navbar */
+  }
+
+  .chat-messages {
+    padding-bottom: 80px; /* Space for input area */
+  }
+}
+
 .chat-header {
   padding: 16px 24px;
   background: #5ab2a8;
@@ -653,6 +599,7 @@ onUnmounted(() => {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0; /* Prevent header from shrinking */
 }
 
 .back-btn {
@@ -753,6 +700,7 @@ onUnmounted(() => {
   border-top: 1px solid #e2e8f0;
   display: flex;
   gap: 12px;
+  flex-shrink: 0; /* Prevent input area from shrinking */
 }
 
 .chat-input {

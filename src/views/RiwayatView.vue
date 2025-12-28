@@ -8,6 +8,18 @@ import {
   ClipboardList,
   CheckCircle,
 } from "lucide-vue-next";
+import { useConsultationStore } from "../stores/consultation";
+import { useTrackerStore } from "../stores/tracker";
+import { useEducationStore } from "../stores/education";
+import { storeToRefs } from "pinia";
+
+// Stores
+const consultationStore = useConsultationStore();
+const trackerStore = useTrackerStore();
+const educationStore = useEducationStore();
+const { history: consultationHistory } = storeToRefs(consultationStore);
+const { history: trackerHistory } = storeToRefs(trackerStore);
+const { history: educationHistory } = storeToRefs(educationStore);
 
 // Stats
 const stats = ref([
@@ -37,7 +49,7 @@ const stats = ref([
 // Activity Data
 const allActivities = ref([]);
 const visibleActivities = ref([]);
-const displayLimit = ref(5);
+const displayLimit = ref(3);
 const isLoading = ref(false);
 const showNoMoreData = ref(false);
 
@@ -48,13 +60,10 @@ const selectedActivity = ref(null);
 onMounted(() => {
   const allItems = [];
 
-  // 1. Fetch Appointments
-  const savedAppointments = localStorage.getItem("pedulimental_appointments");
-  if (savedAppointments) {
-    const parsed = JSON.parse(savedAppointments);
-    const completed = parsed.filter(a => a.status === 'completed');
-    
-    allItems.push(...completed.map(c => ({
+  // 1. Fetch Appointments from Store
+  const completedAppointments = consultationHistory.value;
+  if (completedAppointments.length > 0) {
+    allItems.push(...completedAppointments.map(c => ({
         id: c.id,
         type: "Konsultasi",
         typeLabel: "Konsultasi",
@@ -68,15 +77,13 @@ onMounted(() => {
         consultantId: c.consultant.id
     })));
 
-    stats.value[0].count = completed.length;
+    stats.value[0].count = completedAppointments.length;
   }
 
-  // 2. Fetch Tracker History
-  const savedTracker = localStorage.getItem("pedulimental_tracker_history");
-  if (savedTracker) {
-    const parsedTracker = JSON.parse(savedTracker);
-    
-    allItems.push(...parsedTracker.map(t => ({
+  // 2. Fetch Tracker History from Store
+  const trackerRecords = trackerHistory.value;
+  if (trackerRecords.length > 0) {
+    allItems.push(...trackerRecords.map(t => ({
       id: t.id,
       type: "Tracker",
       typeLabel: "Tracker",
@@ -90,15 +97,13 @@ onMounted(() => {
       resultLevel: t.resultLevel
     })));
 
-    stats.value[1].count = parsedTracker.length;
+    stats.value[1].count = trackerRecords.length;
   }
 
-  // 3. Fetch Article History
-  const savedArticles = localStorage.getItem("pedulimental_article_history");
-  if (savedArticles) {
-    const parsedArticles = JSON.parse(savedArticles);
-    
-    allItems.push(...parsedArticles.map(a => ({
+  // 3. Fetch Article History from Store
+  const articleRecords = educationHistory.value;
+  if (articleRecords.length > 0) {
+    allItems.push(...articleRecords.map(a => ({
       id: a.id,
       type: "Edukasi",
       typeLabel: "Edukasi",
@@ -112,7 +117,7 @@ onMounted(() => {
       articleId: a.articleId
     })));
 
-    stats.value[2].count = parsedArticles.length;
+    stats.value[2].count = articleRecords.length;
   }
 
   // Sort by ID (timestamp) descending
@@ -123,19 +128,28 @@ onMounted(() => {
 });
 
 const loadMore = async () => {
+  // If all items are currently visible, this acts as "Show Less"
+  if (visibleActivities.value.length >= allActivities.value.length) {
+    displayLimit.value = 3;
+    visibleActivities.value = allActivities.value.slice(0, displayLimit.value);
+    
+    // Optional: smooth scroll back to top of timeline
+    const timeline = document.querySelector('.timeline-container');
+    if (timeline) {
+      timeline.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+    return;
+  }
+
+  // Otherwise, it acts as "Load More"
   isLoading.value = true;
   showNoMoreData.value = false;
   
   // Simulate network delay for UX
   await new Promise(resolve => setTimeout(resolve, 800));
 
-  if (visibleActivities.value.length >= allActivities.value.length) {
-    showNoMoreData.value = true;
-    setTimeout(() => { showNoMoreData.value = false; }, 3000);
-  } else {
-    displayLimit.value += 5;
-    visibleActivities.value = allActivities.value.slice(0, displayLimit.value);
-  }
+  displayLimit.value += 3;
+  visibleActivities.value = allActivities.value.slice(0, displayLimit.value);
 
   isLoading.value = false;
 };
@@ -223,15 +237,14 @@ const handleAction = (item) => {
         </div>
 
         <!-- Load More -->
-        <div class="load-more-wrapper">
+        <div class="load-more-wrapper" v-if="allActivities.length > 3">
           <button 
             class="load-more-btn" 
             @click="loadMore" 
             :disabled="isLoading"
           >
-            {{ isLoading ? 'Memuat...' : 'Muat Lebih Banyak Riwayat' }}
+            {{ isLoading ? 'Memuat...' : (visibleActivities.length >= allActivities.length ? 'Lihat Lebih Sedikit' : 'Muat Lebih Banyak Riwayat') }}
           </button>
-          <p v-if="showNoMoreData" class="no-more-text">Belum ada riwayat lainnya</p>
         </div>
       </div>
 
