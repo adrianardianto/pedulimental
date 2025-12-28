@@ -4,8 +4,11 @@ import { onMounted, ref } from "vue";
 import Navbar from "../components/Navbar.vue";
 import { BookOpen, User, Calendar, ArrowLeft, PlayCircle } from "lucide-vue-next";
 
+import { useEducationStore } from '../stores/education';
+
 const route = useRoute();
 const currentUser = ref(null);
+const educationStore = useEducationStore();
 
 const getCurrentUser = () => {
    const sessionUser = sessionStorage.getItem("user");
@@ -15,172 +18,11 @@ const getCurrentUser = () => {
    return null;
 };
 
-// Parse ID from "artikel1" -> 1
+// Parse ID dari "artikel1" -> 1
 const paramId = route.params.id;
 const articleId = paramId ? paramId.replace('artikel', '') : null;
 
-// Mock Data
-const contents = [
-  {
-    id: 1,
-    type: 'Artikel',
-    category: 'Stress',
-    duration: '5 menit baca',
-    title: 'Mengelola Stres di Tempat Kerja',
-    description: 'Stres kerja adalah hal yang umum dialami. Pelajari strategi efektif untuk mengelola stres',
-    author: 'Dr. Sarah Wijaya',
-    date: '10 Des 2024',
-    bgClass: 'bg-blue',
-    fullContent: `
-      <p class="intro-text">Stres kerja adalah hal yang umum dialami. Pelajari strategi efektif untuk mengelola stres dan meningkatkan produktivitas tanpa mengorbankan kesehatan mental Anda.</p>
-      
-      <h2>Memahami Permasalahan</h2>
-      <p>Banyak pekerja mengalami tekanan yang tinggi akibat tenggat waktu yang ketat, beban kerja yang berlebihan, atau lingkungan kerja yang kurang mendukung. Stres yang berkepanjangan dapat berdampak negatif pada kesehatan fisik dan emosional.</p>
-      <p>Penting untuk mengenali tanda-tanda awal stres seperti kelelahan kronis, mudah marah, atau sulit berkonsentrasi agar dapat segera ditangani.</p>
-
-      <h2>Strategi yang Dapat Diterapkan</h2>
-      <ul>
-        <li><strong>Identifikasi sumber stres utama dalam kehidupan Anda:</strong> Catat apa saja yang memicu rasa cemas atau tekanan di tempat kerja.</li>
-        <li><strong>Praktikkan teknik pernapasan dalam untuk menenangkan diri:</strong> Lakukan latihan pernapasan sederhana selama 2-3 menit saat merasa tertekan.</li>
-        <li><strong>Buat batasan yang jelas antara pekerjaan dan kehidupan pribadi:</strong> Hindari membawa pekerjaan ke rumah jika memungkinkan.</li>
-        <li><strong>Luangkan waktu untuk aktivitas yang Anda nikmati:</strong> Hobi dan relaksasi sangat penting untuk pemulihan energi mental.</li>
-        <li><strong>Jangan ragu untuk meminta bantuan ketika diperlukan:</strong> Berbicara dengan rekan kerja atau profesional dapat memberikan perspektif baru.</li>
-      </ul>
-
-      <h2>Kesimpulan</h2>
-      <p>Mengelola kesehatan mental adalah perjalanan yang berkelanjutan. Dengan menerapkan strategi-strategi ini secara konsisten, Anda dapat membangun ketahanan mental yang lebih kuat dan meningkatkan kualitas hidup secara keseluruhan.</p>
-    `
-  },
-  {
-    id: 2,
-    type: 'Video',
-    category: 'Self-Care',
-    duration: '12 menit tonton',
-    title: 'Pentingnya Self-Care untuk Kesehatan Mental',
-    description: 'Self-care bukan tentang mementingkan diri sendiri, tetapi tentang merawat diri agar dapat berfungsi optimal.',
-    author: 'Psikolog Amanda Chen',
-    date: '8 Des 2024',
-    bgClass: 'bg-teal',
-    videoUrl: 'https://www.youtube.com/embed/hJbRpHZr_d0', 
-    fullContent: `
-       <p class="intro-text">Seringkali kita merasa bersalah ketika meluangkan waktu untuk diri sendiri. Padahal, self-care adalah pondasi utama agar kita bisa hadir sepenuhnya untuk orang lain dan pekerjaan kita.</p>
-       
-       <h2>Apa itu Self-Care?</h2>
-       <p>Self-care adalah tindakan sadar yang diambil untuk menjaga kesehatan fisik, mental, dan emosional kita. Ini bukan tindakan egois, melainkan bentuk tanggung jawab terhadap kesejahteraan diri sendiri.</p>
-       
-       <h2>Poin Penting dalam Video</h2>
-       <ul>
-         <li>Membedakan antara egois dan merawat diri.</li>
-         <li>Tanda-tanda Anda mengalami burnout dan butuh istirahat.</li>
-         <li>Rutinitas self-care sederhana yang bisa dilakukan di rumah.</li>
-       </ul>
-       
-       <h2>Kesimpulan</h2>
-       <p>Jangan menunggu sampai Anda kehabisan energi. Mulailah jadikan self-care sebagai prioritas harian Anda.</p>
-    `
-  },
-  {
-    id: 3,
-    type: 'Artikel',
-    category: 'Mindfulness',
-    duration: '7 menit baca',
-    title: 'Teknik Mindfulness untuk Pemula',
-    description: 'Mindfulness adalah praktik sederhana yang dapat membantu mengurangi kecemasan dan',
-    author: 'Dr. Budi Santoso',
-    date: '5 Des 2024',
-    bgClass: 'bg-teal',
-    fullContent: `
-       <p class="intro-text">Mindfulness adalah kemampuan dasar manusia untuk hadir sepenuhnya, sadar akan di mana kita berada dan apa yang kita lakukan, serta tidak terlalu reaktif atau kewalahan oleh apa yang terjadi di sekitar kita.</p>
-       
-       <h2>Memulai Praktik Mindfulness</h2>
-       <p>Anda tidak perlu peralatan khusus untuk memulai. Cukup luangkan waktu 5-10 menit setiap hari di tempat yang tenang.</p>
-       
-       <h2>Langkah-langkah Sederhana</h2>
-       <ul>
-        <li><strong>Cari posisi nyaman:</strong> Duduklah dengan tegak namun rileks.</li>
-        <li><strong>Fokus pada napas:</strong> Rasakan aliran udara masuk dan keluar melalui hidung.</li>
-        <li><strong>Amati pikiran:</strong> Jika pikiran mengembara, perlahan kembalikan fokus ke napas tanpa menghakimi diri sendiri.</li>
-       </ul>
-
-       <h2>Manfaat Jangka Panjang</h2>
-       <p>Dengan latihan rutin, mindfulness dapat membantu menurunkan tingkat stres, meningkatkan fokus, dan memperbaiki kualitas tidur Anda.</p>
-    `
-  },
-  {
-    id: 4,
-    type: 'Artikel',
-    category: 'Anxiety',
-    duration: '8 menit baca',
-    title: 'Memahami dan Mengatasi Anxiety',
-    description: 'Anxiety adalah respons alami tubuh terhadap stres. Pelajari cara mengenali gejala dan teknik',
-    author: 'Dr. Sarah Wijaya',
-    date: '3 Des 2024',
-    bgClass: 'bg-teal',
-    fullContent: `
-      <p class="intro-text">Kecemasan adalah perasaan khawatir, gugup, atau gelisah. Ini adalah reaksi normal terhadap stres, namun bisa menjadi gangguan jika berlebihan.</p>
-      
-      <h2>Gejala Umum</h2>
-      <p>Gejala fisik bisa berupa jantung berdebar, berkeringat, atau gemetar. Secara emosional, Anda mungkin merasa tegang atau takut akan hal buruk yang akan terjadi.</p>
-      
-      <h2>Tips Mengatasi Kecemasan</h2>
-      <ol>
-        <li><strong>Olahraga teratur:</strong> Aktivitas fisik dapat melepaskan endorfin yang meningkatkan suasana hati.</li>
-        <li><strong>Dapatkan tidur yang cukup:</strong> Kurang tidur dapat memperburuk kecemasan.</li>
-        <li><strong>Kurangi kafein:</strong> Kafein dapat memicu gejala fisik yang menyerupai kecemasan.</li>
-      </ol>
-    `
-  },
-  {
-    id: 5,
-    type: 'Video',
-    category: 'Relationships',
-    duration: '15 menit tonton',
-    title: 'Membangun Komunikasi Sehat dalam Hubungan',
-    description: 'Komunikasi yang baik adalah kunci hubungan yang sehat. Temukan tips praktis untuk meningkatkan kualitas hubungan Anda.',
-    author: 'Psikolog Amanda Chen',
-    date: '1 Des 2024',
-    bgClass: 'bg-blue',
-    // Using a known safe embed URL for testing: Lofi Girl or similar safe content if original is dead
-    // Or just fixing formatting. The previous one looked like proper embed format but maybe the ID is restricted.
-    // Let's use a very standard TED talk or similar safe video about mental health.
-    // Video: "Try something new for 30 days" - Matt Cutts
-    videoUrl: 'https://www.youtube.com/embed/R1vskiVDwl4', 
-    fullContent: `
-      <p class="intro-text">Banyak masalah dalam hubungan berakar dari komunikasi yang kurang efektif. Video ini mengupas tuntas cara menyampaikan perasaan tanpa menyakiti pasangan dan cara menjadi pendengar yang baik.</p>
-      
-      <h2>Topik Pembahasan</h2>
-      <ul>
-        <li>Pentingnya "I statements" daripada menuduh.</li>
-        <li>Mendengarkan aktif vs mendengarkan untuk menjawab.</li>
-        <li>Cara menangani konflik dengan kepala dingin.</li>
-      </ul>
-      
-      <p>Komunikasi adalah keterampilan yang bisa dipelajari. Dengan latihan, Anda bisa membangun hubungan yang lebih dalam dan harmonis.</p>
-    `
-  },
-  {
-    id: 6,
-    type: 'Artikel',
-    category: 'Depression',
-    duration: '6 menit baca',
-    title: 'Mengenali Tanda-tanda Depresi',
-    description: 'Depresi lebih dari sekadar rasa sedih. Kenali gejala-gejala depresi dan kapan waktu yang tepat mencari bantuan.',
-    author: 'Dr. Budi Santoso',
-    date: '28 Nov 2024',
-    bgClass: 'bg-teal',
-     fullContent: `
-      <p class="intro-text">Depresi adalah gangguan suasana hati yang serius yang memengaruhi cara Anda merasa, berpikir, dan menangani aktivitas sehari-hari.</p>
-      
-      <h2>Tanda Utama</h2>
-      <p>Jika Anda merasa sedih terus-menerus selama lebih dari dua minggu, kehilangan minat pada hobi yang biasa dinikmati, dan merasa lelah sepanjang waktu, Anda mungkin mengalami depresi.</p>
-      
-      <h2>Kapan Harus Mencari Bantuan?</h2>
-      <p>Segera hubungi profesional jika gejala-gejala ini mulai mengganggu pekerjaan, sekolah, atau hubungan pribadi Anda. Ingat, depresi dapat diobati dan Anda tidak sendirian.</p>
-    `
-  }
-];
-
-const article = contents.find(c => c.id == articleId) || {
+const article = educationStore.getContentById(articleId) || {
   title: "Konten Tidak Ditemukan",
   fullContent: "<p>Maaf, konten yang Anda cari tidak ditemukan.</p>",
   category: "Error",
@@ -192,30 +34,8 @@ const article = contents.find(c => c.id == articleId) || {
 onMounted(() => {
   currentUser.value = getCurrentUser();
 
-  if (article.id) {
-    const historyItem = {
-      id: Date.now(),
-      date: new Date().toISOString().split('T')[0],
-      time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-      type: "Edukasi",
-      title: article.title,
-      // Create a short description from full content (strip HTML) or use existing description
-      desc: article.description || "Membaca artikel edukasi kesehatan mental.",
-      articleId: article.id,
-      link: "Baca Lagi",
-      action: "Bagikan",
-      userEmail: currentUser.value?.email
-    };
-
-    const saved = localStorage.getItem("pedulimental_article_history");
-    const history = saved ? JSON.parse(saved) : [];
-
-    // Optional: Check if the last entry is the same to avoid duplicates on refresh
-    const lastEntry = history[history.length - 1];
-    if (!lastEntry || lastEntry.articleId !== article.id) {
-       history.push(historyItem);
-       localStorage.setItem("pedulimental_article_history", JSON.stringify(history));
-    }
+  if (article && article.id) {
+     educationStore.addToHistory(article);
   }
 });
 
@@ -270,7 +90,7 @@ onMounted(() => {
         </div>
 
         <!-- Featured Image (Only for Articles) -->
-        <div v-else class="featured-image" :class="article.bgClass || 'bg-default'"></div>
+        <div v-else class="featured-image" :class="article.bgClass || 'bg-default'" :style="article.image ? { backgroundImage: `url(${article.image})` } : {}"></div>
 
         <div class="article-content" v-html="article.fullContent"></div>
       </div>
@@ -379,11 +199,13 @@ onMounted(() => {
 /* Featured Image */
 .featured-image {
   width: 100%;
+  max-width: 600px; /* Limit width to avoid being too wide */
   height: 300px;
   border-radius: 16px;
-  margin-bottom: 40px;
+  margin: 0 auto 40px; /* Center horizontally */
   background-size: cover;
   background-position: center;
+  background-repeat: no-repeat;
 }
 
 /* Video Container */

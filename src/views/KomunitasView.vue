@@ -24,53 +24,8 @@ const searchQuery = ref("");
 // Use authStore for current user
 const currentUser = computed(() => authStore.user || { name: 'Anda', email: '', avatar: null });
 
-const staticGroups = [
-  {
-    id: 1,
-    name: "Support Group untuk Anxiety",
-    memberCount: 1234,
-    description: "Ruang aman untuk berbagi pengalaman dan dukungan seputar kecemasan.",
-    gradient: "linear-gradient(135deg, #81C7D4 0%, #A2D2CD 100%)"
-  },
-  {
-    id: 2,
-    name: "Mindfulness & Meditation",
-    memberCount: 892,
-    description: "Belajar dan berlatih mindfulness bersama untuk ketenangan jiwa.",
-    gradient: "linear-gradient(135deg, #A8D5BA 0%, #81C7D4 100%)"
-  },
-  { 
-    id: 3, 
-    name: "Work-Life Balance", 
-    memberCount: 756, 
-    description: "Diskusi tentang menyeimbangkan karir dan kehidupan pribadi.",
-    gradient: "linear-gradient(135deg, #FF9A9E 0%, #FECFEF 100%)"
-  },
-  { 
-    id: 4, 
-    name: "Self-Care Warriors", 
-    memberCount: 1045, 
-    description: "Tips dan motivasi untuk merawat diri sendiri setiap hari.",
-    gradient: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
-  },
-  { 
-    id: 5, 
-    name: "Parenting Journey", 
-    memberCount: 654, 
-    description: "Support system untuk orang tua dalam mengasuh anak dengan penuh kesadaran.",
-    gradient: "linear-gradient(135deg, #fccb90 0%, #d57eeb 100%)"
-  },
-  { 
-    id: 6, 
-    name: "Career Stress Relief", 
-    memberCount: 890, 
-    description: "Berbagi tips dan dukungan untuk mengatasi tekanan di lingkungan kerja.",
-    gradient: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)"
-  },
-];
-
 const groups = computed(() => {
-    return staticGroups.map(g => ({
+    return communityStore.groups.map(g => ({
         ...g,
         isJoined: communityStore.isJoined(g.id)
     }));
@@ -112,16 +67,21 @@ const toggleJoin = (group) => {
       return;
   }
   if (group.isJoined) {
-      communityStore.leaveGroup(group.id);
+      if (confirm(`Apakah Anda yakin ingin keluar dari grup "${group.name}"?`)) {
+          communityStore.leaveGroup(group.id);
+      }
   } else {
       communityStore.joinGroup(group.id);
+      // Optional: Ask to open chat immediately? No, let user explore.
+      // But maybe switch to 'joined' tab? 
+      // activeGroupTab.value = 'joined'; 
   }
 };
 
 const openChat = (group) => {
   if (group.isJoined) {
     selectedGroup.value = group;
-    // Auto scroll when opening
+    // Auto scroll saat dibuka
     setTimeout(scrollToBottom, 100);
   } else {
     alert("Silakan gabung grup terlebih dahulu untuk memulai chat.");
@@ -195,7 +155,11 @@ const sendMessage = () => {
           </div>
           
           <div v-for="group in filteredGroups" :key="group.id" class="group-card" :class="{ 'clickable': activeGroupTab === 'joined' }">
-            <div class="card-header" :style="{ background: group.gradient }">
+            <div class="card-header" :style="{ 
+              background: group.image ? `url(${group.image})` : group.gradient,
+              backgroundSize: 'cover',
+              backgroundPosition: 'center'
+            }">
               <div class="header-badge member-badge">
                 <Users :size="14" />
                 <span>{{ group.memberCount }}</span>
@@ -519,8 +483,8 @@ const sendMessage = () => {
 
 .btn-leave {
   background: white;
-  color: #64748b;
-  border: 1px solid #cbd5e1;
+  color: #ef4444; /* Red color */
+  border: 1px solid #ef4444;
   padding: 10px;
   border-radius: 8px;
   font-weight: 700;
@@ -531,8 +495,9 @@ const sendMessage = () => {
 }
 
 .btn-leave:hover {
-  border-color: #94a3b8;
-  color: #475569;
+  background: #fef2f2;
+  border-color: #dc2626;
+  color: #dc2626;
 }
 
 .join-btn {

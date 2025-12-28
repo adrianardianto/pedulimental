@@ -16,118 +16,13 @@ const filters = [
   'Semua', 'Anxiety', 'Depression', 'Stress', 'Self-Care', 'Mindfulness', 'Relationships'
 ];
 
-const contents = [
-  {
-    id: 1,
-    type: 'Artikel',
-    typeIcon: BookOpen,
-    category: 'Stress',
-    duration: '5 menit',
-    title: 'Mengelola Stres di Tempat Kerja',
-    description: 'Stres kerja adalah hal yang umum dialami. Pelajari strategi efektif untuk mengelola stres',
-    author: 'Dr. Sarah Wijaya',
-    date: '10 Des 2024',
-    bgClass: 'bg-blue',
-    contentUrl: 'https://www.halodoc.com/artikel/cara-mengatasi-stres-kerja-yang-efektif',
-    fullContent: `
-      <h2>Mengelola Stres di Tempat Kerja</h2>
-      <p>Stres di tempat kerja adalah masalah umum yang dapat memengaruhi kesehatan mental dan fisik, serta produktivitas. Berikut adalah beberapa strategi untuk mengelolanya:</p>
-      <ul>
-        <li><strong>Kenali Pemicu Stres:</strong> Identifikasi situasi atau orang yang memicu stres Anda.</li>
-        <li><strong>Atur Waktu dengan Baik:</strong> Buat prioritas tugas dan hindari penundaan.</li>
-        <li><strong>Ambil Istirahat Sejenak:</strong> Luangkan waktu untuk istirahat singkat di sela-sela pekerjaan.</li>
-        <li><strong>Komunikasi yang Terbuka:</strong> Bicarakan beban kerja Anda dengan atasan jika dirasa berlebihan.</li>
-      </ul>
-      <p>Ingatlah bahwa kesehatan mental Anda adalah prioritas utama.</p>
-    `
-  },
-  {
-    id: 2,
-    type: 'Video',
-    typeIcon: Video,
-    category: 'Self-Care',
-    duration: '12 menit',
-    title: 'Pentingnya Self-Care untuk Kesehatan Mental',
-    description: 'Self-care bukan tentang mementingkan diri sendiri, tetapi tentang merawat diri agar dapat',
-    author: 'Psikolog Amanda Chen',
-    date: '8 Des 2024',
-    bgClass: 'bg-teal',
-    contentUrl: 'https://www.youtube.com/watch?v=w0iVVd0S30I' // Example YouTube link
-  },
-  {
-    id: 3,
-    type: 'Artikel',
-    typeIcon: BookOpen,
-    category: 'Mindfulness',
-    duration: '7 menit',
-    title: 'Teknik Mindfulness untuk Pemula',
-    description: 'Mindfulness adalah praktik sederhana yang dapat membantu mengurangi kecemasan dan',
-    author: 'Dr. Budi Santoso',
-    date: '5 Des 2024',
-    bgClass: 'bg-blue',
-    fullContent: `
-       <h2>Teknik Mindfulness untuk Pemula</h2>
-       <p>Mindfulness adalah kemampuan dasar manusia untuk hadir sepenuhnya, sadar akan di mana kita berada dan apa yang kita lakukan, serta tidak terlalu reaktif atau kewalahan oleh apa yang terjadi di sekitar kita.</p>
-       <p>Cobalah latihan pernapasan sederhana: Tarik napas dalam-dalam, tahan sejenak, dan hembuskan perlahan. Fokuskan perhatian Anda hanya pada napas Anda.</p>
-    `
-  },
-  {
-    id: 4,
-    type: 'Artikel',
-    typeIcon: BookOpen,
-    category: 'Anxiety',
-    duration: '8 menit',
-    title: 'Memahami dan Mengatasi Anxiety',
-    description: 'Anxiety adalah respons alami tubuh terhadap stres. Pelajari cara mengenali gejala dan teknik',
-    author: 'Dr. Sarah Wijaya',
-    date: '3 Des 2024',
-    bgClass: 'bg-teal',
-    fullContent: `
-      <h2>Memahami Anxiety</h2>
-      <p>Kecemasan adalah perasaan khawatir, gugup, atau gelisah. Ini adalah reaksi normal terhadap stres.</p>
-      <p>Tips mengatasi:</p>
-      <ol>
-        <li>Olahraga teratur</li>
-        <li>Dapatkan tidur yang cukup</li>
-        <li>Kurangi kafein</li>
-      </ol>
-    `
-  },
-  {
-    id: 5,
-    type: 'Video',
-    typeIcon: Video,
-    category: 'Relationships',
-    duration: '15 menit',
-    title: 'Membangun Komunikasi Sehat dalam Hubungan',
-    description: 'Komunikasi yang baik adalah kunci hubungan yang sehat. Temukan tips praktis untuk',
-    author: 'Psikolog Amanda Chen',
-    date: '1 Des 2024',
-    bgClass: 'bg-blue',
-    contentUrl: 'https://www.youtube.com/watch?v=X5uR071a_yI' // Example
-  },
-  {
-    id: 6,
-    type: 'Artikel',
-    typeIcon: BookOpen,
-    category: 'Depression',
-    duration: '6 menit',
-    title: 'Mengenali Tanda-tanda Depresi',
-    description: 'Depresi lebih dari sekadar rasa sedih. Kenali gejala-gejala depresi dan kapan waktu yang',
-    author: 'Dr. Budi Santoso',
-    date: '28 Nov 2024',
-    bgClass: 'bg-teal',
-    fullContent: `
-      <h2>Tanda-tanda Depresi</h2>
-      <p>Jika Anda merasa sedih terus-menerus selama lebih dari dua minggu, Anda mungkin mengalami depresi.</p>
-      <p>Gejala umum meliputi kehilangan minat pada aktivitas yang disukai, perubahan nafsu makan, dan gangguan tidur.</p>
-    `
-  }
-];
+const getTypeIcon = (type) => {
+  return type === 'Video' ? Video : BookOpen;
+};
 
 // Computed
 const filteredContents = computed(() => {
-  return contents.filter(item => {
+  return educationStore.contents.filter(item => {
     const searchMatch = item.title.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
                         item.description.toLowerCase().includes(searchQuery.value.toLowerCase());
     const filterMatch = activeFilter.value === 'Semua' || item.category === activeFilter.value;
@@ -141,10 +36,8 @@ const clearSearch = () => {
 };
 
 const openContent = (item) => {
-  // Add to Store History
+  // Simpan ke history dan buka halaman detail
   educationStore.addToHistory(item);
-
-  // Always open Detail Page, including for videos
   router.push({ name: 'detail-artikel', params: { id: `artikel${item.id}` } });
 };
 </script>
@@ -191,9 +84,9 @@ const openContent = (item) => {
       <!-- Content Grid -->
       <TransitionGroup name="list" tag="div" class="content-grid">
         <div v-for="item in filteredContents" :key="item.id" class="content-card" @click="openContent(item)">
-          <div class="card-header" :class="item.type.toLowerCase() === 'video' ? 'video-bg' : 'article-bg'">
+          <div class="card-header" :class="item.type.toLowerCase() === 'video' ? 'video-bg' : 'article-bg'" :style="item.image ? { backgroundImage: `url(${item.image})` } : {}">
             <div class="type-badge">
-              <component :is="item.typeIcon" :size="16" />
+              <component :is="getTypeIcon(item.type)" :size="16" />
               <span>{{ item.type }}</span>
             </div>
           </div>
@@ -342,7 +235,7 @@ const openContent = (item) => {
 }
 
 .card-header {
-  height: 180px;
+  height: 300px;
   position: relative;
   background-size: cover;
   background-position: center;

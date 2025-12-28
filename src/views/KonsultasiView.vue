@@ -24,44 +24,7 @@ const route = useRoute();
 
 const menuItems = ["Jadwal Saya", "Konsultan Tersedia", "Riwayat Konsultasi"];
 
-const consultants = [
-  {
-    id: 1,
-    name: "Dr. Sarah Wijaya, M.Psi",
-    role: "Psikolog Klinis - Anxiety & Stress Management",
-    rating: 4.9,
-    imageGradient: "linear-gradient(135deg, #81C7D4 0%, #A2D2CD 100%)", // Blue-Teal
-    experience: "7 Tahun",
-    alumni: "S2 Psikologi Klinis, Universitas Indonesia",
-    price: "Rp 250.000",
-    approach: "Cognitive Behavioral Therapy (CBT), Mindfulness-Based Therapy",
-    about: "Berfokus pada membantu individu mengatasi kecemasan dan stres melalui pendekatan yang terstruktur dan empatik."
-  },
-  {
-    id: 2,
-    name: "Dr. Budi Santoso, Sp.KJ",
-    role: "Psikiater - Depression & Mood Disorders",
-    rating: 4.8,
-    imageGradient: "linear-gradient(135deg, #A8D5BA 0%, #81C7D4 100%)", // Green-Blue
-    experience: "10 Tahun",
-    alumni: "Spesialis Kedokteran Jiwa, Universitas Gadjah Mada",
-    price: "Rp 350.000",
-    approach: "Pharmacotherapy, Psychodynamic Therapy",
-    about: "Berpengalaman dalam menangani gangguan mood dan depresi dengan pendekatan medis dan psikologis yang seimbang."
-  },
-  {
-    id: 3,
-    name: "Psikolog Amanda Chen, M.Psi",
-    role: "Psikolog Konseling - Relationship & Family",
-    rating: 4.7,
-    imageGradient: "linear-gradient(135deg, #89C4F4 0%, #A2D2CD 100%)", // Light Blue
-    experience: "5 Tahun",
-    alumni: "S2 Psikologi Profesi, Universitas Padjadjaran",
-    price: "Rp 200.000",
-    approach: "Family Systems Therapy, Emotionally Focused Therapy",
-    about: "Membantu pasangan dan keluarga membangun komunikasi yang sehat dan hubungan yang harmonis."
-  },
-];
+const consultants = consultationStore.consultants;
 
 const selectConsultant = (consultant) => {
   selectedConsultant.value = consultant;
@@ -71,16 +34,16 @@ const selectConsultant = (consultant) => {
   bookingDate.value = tomorrow.toISOString().split('T')[0];
   bookingTime.value = "10:00";
 
-  // Auto scroll to detail panel on mobile/tablet with 1s duration
+  // Auto scroll ke detail panel di mobile/tablet
   setTimeout(() => {
     if (window.innerWidth <= 1024) {
       const detailPanel = document.querySelector('.detail-panel');
       if (detailPanel) {
-        const yOffset = -80; // Navbar offset
+        const yOffset = -80; // Offset navbar
         const startY = window.pageYOffset;
         const targetY = detailPanel.getBoundingClientRect().top + window.pageYOffset + yOffset;
         const distance = targetY - startY;
-        const duration = 1000; // 1 second
+        const duration = 1000; // Durasi 1 detik
         let startTime = null;
 
         const ease = (t, b, c, d) => {
@@ -149,7 +112,7 @@ const endVideoCall = () => {
 };
 
 onMounted(() => {
-  // Check for pre-selected consultant from other pages (e.g. Riwayat)
+  // Cek konsultan yang dipilih dari halaman lain (misal Riwayat)
   if (route.query.consultantId) {
     const cId = parseInt(route.query.consultantId);
     const found = consultants.find(c => c.id === cId);
@@ -200,7 +163,11 @@ onMounted(() => {
             >
               <div
                 class="card-avatar"
-                :style="{ background: consultant.imageGradient }"
+                :style="{ 
+                  background: consultant.image ? `url(${consultant.image})` : consultant.imageGradient,
+                  backgroundSize: 'cover',
+                  backgroundPosition: 'center top'
+                }"
               ></div>
 
               <div class="card-info">
@@ -222,7 +189,11 @@ onMounted(() => {
              <div v-if="mySchedule.length > 0" class="schedule-grid">
                <div v-for="appointment in mySchedule" :key="appointment.id" class="schedule-card">
                  <div class="schedule-header">
-                   <div class="card-avatar small" :style="{ background: appointment.consultant.imageGradient }"></div>
+                   <div class="card-avatar small" :style="{ 
+                     background: appointment.consultant.image ? `url(${appointment.consultant.image})` : appointment.consultant.imageGradient,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center top'
+                   }"></div>
                    <div>
                      <h4 class="consultant-name small">{{ appointment.consultant.name }}</h4>
                      <p class="consultant-role small">{{ appointment.consultant.role }}</p>
@@ -256,7 +227,11 @@ onMounted(() => {
              <div v-if="consultationHistory.length > 0" class="schedule-grid">
                <div v-for="appointment in consultationHistory" :key="appointment.id" class="schedule-card history">
                  <div class="schedule-header">
-                   <div class="card-avatar small" :style="{ background: appointment.consultant.imageGradient }"></div>
+                   <div class="card-avatar small" :style="{ 
+                     background: appointment.consultant.image ? `url(${appointment.consultant.image})` : appointment.consultant.imageGradient,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center top'
+                   }"></div>
                    <div>
                      <h4 class="consultant-name small">{{ appointment.consultant.name }}</h4>
                      <p class="consultant-role small">{{ appointment.consultant.role }}</p>
@@ -287,7 +262,11 @@ onMounted(() => {
         <!-- Detail Panel (Right Column) -->
         <div v-if="selectedConsultant && activeMenu === 'Konsultan Tersedia'" class="detail-panel">
            <div class="detail-header">
-              <div class="detail-avatar" :style="{ background: selectedConsultant.imageGradient }"></div>
+              <div class="detail-avatar" :style="{ 
+                background: selectedConsultant.image ? `url(${selectedConsultant.image})` : selectedConsultant.imageGradient,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center top'
+              }"></div>
               <h3 class="detail-name">{{ selectedConsultant.name }}</h3>
               <p class="detail-role">{{ selectedConsultant.role }}</p>
            </div>
