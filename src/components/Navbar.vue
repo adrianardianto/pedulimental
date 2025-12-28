@@ -1,30 +1,21 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref } from "vue";
 import { User, Menu, X, LogOut, ChevronDown } from "lucide-vue-next";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
+import { storeToRefs } from "pinia";
 
 const router = useRouter();
+const authStore = useAuthStore();
+
+// Destructure state to maintain reactivity
+const { user, isLoggedIn } = storeToRefs(authStore);
+
 const isOpen = ref(false);
-const isLoggedIn = ref(false);
-const user = ref(null);
 const isProfileMenuOpen = ref(false);
 
-const checkLoginStatus = () => {
-  const userData = sessionStorage.getItem("user") || localStorage.getItem("user");
-  if (userData) {
-    isLoggedIn.value = true;
-    user.value = JSON.parse(userData);
-  } else {
-    isLoggedIn.value = false;
-    user.value = null;
-  }
-};
-
 const handleLogout = () => {
-  localStorage.removeItem("user");
-  sessionStorage.removeItem("user");
-  isLoggedIn.value = false;
-  user.value = null;
+  authStore.logout();
   isProfileMenuOpen.value = false;
   router.push("/login");
 };
@@ -32,15 +23,6 @@ const handleLogout = () => {
 const toggleProfileMenu = () => {
   isProfileMenuOpen.value = !isProfileMenuOpen.value;
 };
-
-onMounted(() => {
-  checkLoginStatus();
-  window.addEventListener("user-login", checkLoginStatus);
-});
-
-onUnmounted(() => {
-  window.removeEventListener("user-login", checkLoginStatus);
-});
 
 const toggleMenu = () => {
   isOpen.value = !isOpen.value;
@@ -54,7 +36,7 @@ const closeMenu = () => {
 <template>
   <nav class="navbar">
     <div class="container navbar-content">
-      <div class="logo">PeduliMental</div>
+      <router-link to="/" class="logo">PeduliMental</router-link>
 
       <!-- Desktop Menu -->
       <div class="nav-links desktop-menu">
@@ -193,6 +175,8 @@ const closeMenu = () => {
   font-size: 24px;
   font-weight: 700;
   color: #5ab2a8; /* Brand Green */
+  text-decoration: none;
+  cursor: pointer;
 }
 
 /* Desktop Menu */

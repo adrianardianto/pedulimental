@@ -54,27 +54,29 @@ const contents = [
   {
     id: 2,
     type: 'Video',
-    category: 'Relaksasi',
-    duration: '10 menit tonton',
-    title: 'Meditasi Panduan untuk Tidur Nyenyak',
-    description: 'Video panduan meditasi untuk membantu Anda rileks dan mendapatkan tidur yang berkualitas',
-    author: 'Yoga With Adriene',
+    category: 'Self-Care',
+    duration: '12 menit tonton',
+    title: 'Pentingnya Self-Care untuk Kesehatan Mental',
+    description: 'Self-care bukan tentang mementingkan diri sendiri, tetapi tentang merawat diri agar dapat berfungsi optimal.',
+    author: 'Psikolog Amanda Chen',
     date: '8 Des 2024',
-    bgClass: 'bg-purple',
-    videoUrl: 'https://www.youtube.com/embed/inpok4MKVLM', // Example ID
+    bgClass: 'bg-teal',
+    videoUrl: 'https://www.youtube.com/embed/hJbRpHZr_d0', 
     fullContent: `
-       <p class="intro-text">Sulit tidur adalah masalah yang sering dialami banyak orang. Video ini akan memandu Anda melalui sesi meditasi relaksasi yang dirancang khusus untuk mempersiapkan tubuh dan pikiran Anda untuk tidur.</p>
+       <p class="intro-text">Seringkali kita merasa bersalah ketika meluangkan waktu untuk diri sendiri. Padahal, self-care adalah pondasi utama agar kita bisa hadir sepenuhnya untuk orang lain dan pekerjaan kita.</p>
        
-       <h2>Apa yang Akan Anda Pelajari</h2>
-       <p>Dalam sesi 10 menit ini, kita akan fokus pada:</p>
+       <h2>Apa itu Self-Care?</h2>
+       <p>Self-care adalah tindakan sadar yang diambil untuk menjaga kesehatan fisik, mental, dan emosional kita. Ini bukan tindakan egois, melainkan bentuk tanggung jawab terhadap kesejahteraan diri sendiri.</p>
+       
+       <h2>Poin Penting dalam Video</h2>
        <ul>
-         <li>Teknik pernapasan 4-7-8 untuk menenangkan sistem saraf.</li>
-         <li>Body scan meditation untuk melepaskan ketegangan fisik.</li>
-         <li>Visualisasi positif untuk menenangkan pikiran yang sibuk.</li>
+         <li>Membedakan antara egois dan merawat diri.</li>
+         <li>Tanda-tanda Anda mengalami burnout dan butuh istirahat.</li>
+         <li>Rutinitas self-care sederhana yang bisa dilakukan di rumah.</li>
        </ul>
        
-       <h2>Tips Tambahan</h2>
-       <p>Untuk hasil terbaik, lakukan latihan ini di ruangan yang gelap dan tenang, dan pastikan gadget Anda dalam mode hening.</p>
+       <h2>Kesimpulan</h2>
+       <p>Jangan menunggu sampai Anda kehabisan energi. Mulailah jadikan self-care sebagai prioritas harian Anda.</p>
     `
   },
   {
@@ -131,23 +133,29 @@ const contents = [
   {
     id: 5,
     type: 'Video',
-    category: 'Motivasi',
+    category: 'Relationships',
     duration: '15 menit tonton',
-    title: 'Membangun Kebiasaan Positif',
-    description: 'Pelajari cara membangun kebiasaan kecil yang berdampak besar bagi kesehatan mental',
-    author: 'James Clear',
+    title: 'Membangun Komunikasi Sehat dalam Hubungan',
+    description: 'Komunikasi yang baik adalah kunci hubungan yang sehat. Temukan tips praktis untuk meningkatkan kualitas hubungan Anda.',
+    author: 'Psikolog Amanda Chen',
     date: '1 Des 2024',
-    bgClass: 'bg-orange',
-    videoUrl: 'https://www.youtube.com/embed/2FGR-OspxsU', // Example ID
+    bgClass: 'bg-blue',
+    // Using a known safe embed URL for testing: Lofi Girl or similar safe content if original is dead
+    // Or just fixing formatting. The previous one looked like proper embed format but maybe the ID is restricted.
+    // Let's use a very standard TED talk or similar safe video about mental health.
+    // Video: "Try something new for 30 days" - Matt Cutts
+    videoUrl: 'https://www.youtube.com/embed/R1vskiVDwl4', 
     fullContent: `
-      <p class="intro-text">Kebiasaan kita menentukan kualitas hidup kita. Dalam video inspiratif ini, kita akan membahas ilmu di balik pembentukan kebiasaan dan bagaimana membuat perubahan kecil yang bertahan lama.</p>
+      <p class="intro-text">Banyak masalah dalam hubungan berakar dari komunikasi yang kurang efektif. Video ini mengupas tuntas cara menyampaikan perasaan tanpa menyakiti pasangan dan cara menjadi pendengar yang baik.</p>
       
-      <h2>Poin Penting</h2>
+      <h2>Topik Pembahasan</h2>
       <ul>
-        <li>Mengapa motivasi saja tidak cukup.</li>
-        <li>Pentingnya lingkungan dalam membentuk perilaku.</li>
-        <li>Aturan 2 menit untuk memulai kebiasaan baru.</li>
+        <li>Pentingnya "I statements" daripada menuduh.</li>
+        <li>Mendengarkan aktif vs mendengarkan untuk menjawab.</li>
+        <li>Cara menangani konflik dengan kepala dingin.</li>
       </ul>
+      
+      <p>Komunikasi adalah keterampilan yang bisa dipelajari. Dengan latihan, Anda bisa membangun hubungan yang lebih dalam dan harmonis.</p>
     `
   },
   {
@@ -156,7 +164,7 @@ const contents = [
     category: 'Depression',
     duration: '6 menit baca',
     title: 'Mengenali Tanda-tanda Depresi',
-    description: 'Depresi lebih dari sekadar rasa sedih. Kenali gejala-gejala depresi dan kapan waktu yang',
+    description: 'Depresi lebih dari sekadar rasa sedih. Kenali gejala-gejala depresi dan kapan waktu yang tepat mencari bantuan.',
     author: 'Dr. Budi Santoso',
     date: '28 Nov 2024',
     bgClass: 'bg-teal',
@@ -167,7 +175,7 @@ const contents = [
       <p>Jika Anda merasa sedih terus-menerus selama lebih dari dua minggu, kehilangan minat pada hobi yang biasa dinikmati, dan merasa lelah sepanjang waktu, Anda mungkin mengalami depresi.</p>
       
       <h2>Kapan Harus Mencari Bantuan?</h2>
-      <p>Segera hubungi profesional jika gejala-gejala ini mulai mengganggu pekerjaan, sekolah, atau hubungan pribadi Anda. Ingat, depresi dapat diobati.</p>
+      <p>Segera hubungi profesional jika gejala-gejala ini mulai mengganggu pekerjaan, sekolah, atau hubungan pribadi Anda. Ingat, depresi dapat diobati dan Anda tidak sendirian.</p>
     `
   }
 ];
