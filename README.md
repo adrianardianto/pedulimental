@@ -81,6 +81,16 @@ Untuk melihat preview hasil build secara lokal (simulasi production):
 npm run preview
 ```
 
+## 📷 Sumber Gambar & Aset
+
+Gambar-gambar yang digunakan dalam aplikasi ini bersumber dari penyedia gambar bebas royalti berikut:
+
+- **[Unsplash](https://unsplash.com/)**: Digunakan untuk foto profil konsultan dan aset visual berkualitas tinggi lainnya.
+- **[Pixabay](https://pixabay.com/)**: Digunakan untuk ilustrasi artikel edukasi dan header komunitas.
+- **[Lucide Icons](https://lucide.dev/)**: Koleksi ikon open-source yang digunakan di seluruh antarmuka aplikasi.
+
+Semua gambar digunakan untuk tujuan demonstrasi dan edukasi. Hak cipta tetap ada pada masing-masing fotografer dan platform penyedia.
+
 ## 🤝 Kontribusi
 
 Kontribusi selalu diterima! Silakan buat _Pull Request_ atau laporkan _Issues_ jika Anda menemukan masalah.
