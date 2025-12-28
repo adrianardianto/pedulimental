@@ -251,6 +251,7 @@ onUnmounted(() => {
   background: #1e293b;
   width: 90%;
   max-width: 800px;
+  max-height: 90vh; /* Prevent overflow */
   border-radius: 20px;
   overflow: hidden;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
@@ -259,12 +260,14 @@ onUnmounted(() => {
 }
 
 .modal-header {
-  padding: 20px;
+  padding: 15px 20px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   border-bottom: 1px solid #334155;
   color: white;
+  background: #1e293b;
+  z-index: 10;
 }
 
 .close-btn {
@@ -290,6 +293,8 @@ onUnmounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-grow: 1; /* Allow it to fill space if flex container */
+  overflow: hidden;
 }
 
 .remote-video {
@@ -309,6 +314,8 @@ onUnmounted(() => {
   overflow: hidden;
   border: 2px solid rgba(255,255,255,0.2);
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+  z-index: 10;
 }
 
 .local-video {
@@ -319,87 +326,101 @@ onUnmounted(() => {
 }
 
 .waiting-message {
-    position: absolute;
-    color: white;
-    text-align: center;
-    background: rgba(0,0,0,0.5);
-    padding: 20px;
-    border-radius: 12px;
+  position: absolute;
+  color: white;
+  text-align: center;
+  background: rgba(0,0,0,0.6);
+  padding: 20px;
+  border-radius: 12px;
+  width: 80%;
+  max-width: 300px;
 }
 
 .error-text {
-    color: #ef4444;
-    font-size: 0.9em;
-    margin-top: 5px;
+  color: #ef4444;
+  font-size: 0.9em;
+  margin-top: 5px;
 }
 
 .connection-info {
-    background: #334155;
-    padding: 15px;
-    color: white;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
+  background: #334155;
+  padding: 15px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
 }
 
 .info-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
 .id-display {
-    background: #1e293b;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-family: monospace;
-    display: flex;
-    align-items: center;
-    gap: 8px;
+  background: #1e293b;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-family: monospace;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .id-input {
-    padding: 8px;
-    border-radius: 6px;
-    border: none;
-    width: 200px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: none;
+  width: 200px;
+  background: #f1f5f9;
+  color: #0f172a;
 }
 
 .call-btn {
-    padding: 8px 16px;
-    background: #5AB2A8;
-    border: none;
-    border-radius: 6px;
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
+  padding: 8px 16px;
+  background: #5AB2A8;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background-color 0.2s;
+}
+
+.call-btn:hover {
+  background: #4a9e95;
 }
 
 .icon-btn {
-    background: none;
-    border: none;
-    color: #94a3b8;
-    cursor: pointer;
-    display: flex;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  padding: 4px;
 }
 
 .icon-btn:hover {
-    color: white;
+  color: white;
 }
 
 .hint {
-    font-size: 12px;
-    color: #94a3b8;
-    margin: 0;
+  font-size: 12px;
+  color: #cbd5e1;
+  margin: 0;
+  text-align: center;
 }
 
 .controls {
-  padding: 24px;
+  padding: 20px;
   display: flex;
   justify-content: center;
   gap: 20px;
   background: #1e293b;
+  border-top: 1px solid #334155;
 }
 
 .control-btn {
@@ -414,10 +435,12 @@ onUnmounted(() => {
   align-items: center;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
 .control-btn:hover {
   background: #475569;
+  transform: translateY(-2px);
 }
 
 .control-btn.off {
@@ -427,9 +450,95 @@ onUnmounted(() => {
 
 .control-btn.end-call {
   background: #ef4444;
+  width: 60px;
+  height: 60px;
 }
 
 .control-btn.end-call:hover {
   background: #dc2626;
+}
+
+/* Base Responsive */
+@media (max-width: 640px) {
+  .modal-content {
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    border-radius: 0;
+  }
+
+  .modal-header {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+      border-bottom: none;
+      z-index: 20;
+      padding-top: env(safe-area-inset-top); /* Handle notch */
+  }
+
+  .modal-header h3 {
+      font-size: 1.1rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  }
+
+  .video-container {
+    height: 100%; /* Fill screen on mobile */
+    aspect-ratio: auto;
+  }
+
+  .remote-video {
+    object-fit: cover; /* Ensure it covers full screen */
+  }
+
+  .local-video-wrapper {
+    width: 100px;
+    bottom: 110px; /* Above controls */
+    right: 16px;
+    border-radius: 8px;
+  }
+
+  /* Make connection info overlay on global space or push content up? 
+     For 'Connecting' state, it's fine to cover video. 
+     For 'Connected' state, we hide it anyway. 
+  */
+  .connection-info {
+      position: absolute;
+      bottom: 100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 90%;
+      border-radius: 12px;
+      background: rgba(30, 41, 59, 0.9);
+      backdrop-filter: blur(8px);
+      z-index: 15;
+  }
+  
+  .info-group {
+      flex-direction: column;
+      width: 100%;
+      align-items: stretch;
+  }
+
+  .id-input {
+      width: 100%;
+  }
+
+  .controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding-bottom: max(20px, env(safe-area-inset-bottom));
+      background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+      border-top: none;
+      z-index: 20;
+  }
+
+  .waiting-message {
+      z-index: 5;
+  }
 }
 </style>

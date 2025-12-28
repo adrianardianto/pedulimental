@@ -1,18 +1,21 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, nextTick } from "vue";
 import { useRoute } from "vue-router";
 import Navbar from "../components/Navbar.vue";
 import { Star, Calendar, Clock, CheckCircle, GraduationCap, Briefcase, Video } from "lucide-vue-next";
 import VideoCallModal from "../components/VideoCallModal.vue";
 import PaymentModal from "../components/PaymentModal.vue";
+import { useConsultationStore } from "../stores/consultation";
+import { storeToRefs } from "pinia";
+
+const consultationStore = useConsultationStore();
+const { upcomingSchedule: mySchedule, history: consultationHistory } = storeToRefs(consultationStore);
 
 const activeMenu = ref("Konsultan Tersedia");
 const selectedConsultant = ref(null);
 const bookingDate = ref("");
 const bookingTime = ref("");
-const mySchedule = ref([]);
 
-const consultationHistory = ref([]);
 const showVideoCall = ref(false);
 const showPaymentModal = ref(false);
 const activeAppointment = ref(null);
@@ -67,6 +70,38 @@ const selectConsultant = (consultant) => {
   tomorrow.setDate(tomorrow.getDate() + 1);
   bookingDate.value = tomorrow.toISOString().split('T')[0];
   bookingTime.value = "10:00";
+
+  // Auto scroll to detail panel on mobile/tablet with 1s duration
+  setTimeout(() => {
+    if (window.innerWidth <= 1024) {
+      const detailPanel = document.querySelector('.detail-panel');
+      if (detailPanel) {
+        const yOffset = -80; // Navbar offset
+        const startY = window.pageYOffset;
+        const targetY = detailPanel.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        const distance = targetY - startY;
+        const duration = 1000; // 1 second
+        let startTime = null;
+
+        const ease = (t, b, c, d) => {
+          t /= d / 2;
+          if (t < 1) return c / 2 * t * t + b;
+          t--;
+          return -c / 2 * (t * (t - 2) - 1) + b;
+        };
+
+        const animation = (currentTime) => {
+          if (startTime === null) startTime = currentTime;
+          const timeElapsed = currentTime - startTime;
+          const run = ease(timeElapsed, startY, distance, duration);
+          window.scrollTo(0, run);
+          if (timeElapsed < duration) requestAnimationFrame(animation);
+        };
+
+        requestAnimationFrame(animation);
+      }
+    }
+  }, 100);
 };
 
 const closeDetailPanel = () => {
@@ -90,26 +125,17 @@ const handlePaymentSuccess = () => {
     status: 'upcoming'
   };
   
-  mySchedule.value.push(newAppointment);
-  saveAppointments();
+  // Use STORE action
+  consultationStore.addAppointment(newAppointment);
+
   // Alert handled by modal success state, but we can do extra cleanup
   closeDetailPanel();
   activeMenu.value = "Jadwal Saya";
 };
 
 const finishConsultation = (appointment) => {
-  appointment.status = 'completed';
-  // Move to history
-  consultationHistory.value.push(appointment);
-  // Remove from schedule
-  mySchedule.value = mySchedule.value.filter(a => a.id !== appointment.id);
-  
-  saveAppointments();
-};
-
-const saveAppointments = () => {
-  const allAppointments = [...mySchedule.value, ...consultationHistory.value];
-  localStorage.setItem("pedulimental_appointments", JSON.stringify(allAppointments));
+  // Use STORE action
+  consultationStore.completeAppointment(appointment.id);
 };
 
 const startVideoCall = (appointment) => {
@@ -123,13 +149,6 @@ const endVideoCall = () => {
 };
 
 onMounted(() => {
-  const saved = localStorage.getItem("pedulimental_appointments");
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    mySchedule.value = parsed.filter(a => a.status === 'upcoming');
-    consultationHistory.value = parsed.filter(a => a.status === 'completed');
-  }
-
   // Check for pre-selected consultant from other pages (e.g. Riwayat)
   if (route.query.consultantId) {
     const cId = parseInt(route.query.consultantId);
