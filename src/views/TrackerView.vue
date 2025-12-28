@@ -13,6 +13,7 @@ const isFinished = ref(false);
 const isStarted = ref(false);
 const answers = ref([]);
 const resultLevel = ref("");
+const showEmergencyModal = ref(false);
 
 const questions = [
   {
@@ -81,7 +82,7 @@ const selectOption = (index) => {
 
 const nextQuestion = () => {
   if (selectedOption.value !== null) {
-    // Save answer
+    // Simpan jawaban
     answers.value[currentQuestion.value] = selectedOption.value;
 
     if (currentQuestion.value < questions.length - 1) {
@@ -97,7 +98,7 @@ const nextQuestion = () => {
 const prevQuestion = () => {
   if (currentQuestion.value > 0) {
     currentQuestion.value--;
-    // Restore previous answer
+    // Kembalikan jawaban sebelumnya
     selectedOption.value = answers.value[currentQuestion.value];
     progress.value = Math.max(((currentQuestion.value + 1) / questions.length) * 100, 0);
   }
@@ -108,7 +109,7 @@ const finishSurvey = () => {
   isFinished.value = true;
   progress.value = 100;
 
-  // Save to history via STORE
+  // Simpan ke riwayat via STORE
   const historyItem = {
     id: Date.now(),
     date: new Date().toISOString().split('T')[0],
@@ -304,12 +305,51 @@ const startTracker = () => {
               Jika Anda merasa dalam krisis atau membutuhkan bantuan segera,
               hubungi layanan darurat atau hotline kesehatan mental.
             </p>
-            <a href="#" class="emergency-link">Lihat Kontak Darurat</a>
+            <a href="#" class="emergency-link" @click.prevent="showEmergencyModal = true">Lihat Kontak Darurat</a>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Emergency Modal -->
+  <Teleport to="body">
+    <div v-if="showEmergencyModal" class="modal-overlay" @click="showEmergencyModal = false">
+      <div class="modal-content" @click.stop>
+        <div class="modal-header">
+          <h3 class="modal-title" style="color: #ef4444;">Kontak Darurat</h3>
+          <button class="close-btn" @click="showEmergencyModal = false">&times;</button>
+        </div>
+        
+        <div class="modal-body">
+          <p class="emergency-note">Jika Anda atau seseorang yang Anda kenal dalam bahaya segera, hubungi nomor darurat di bawah ini:</p>
+          
+          <div class="contact-list">
+            <a href="tel:119" class="contact-item">
+              <span class="contact-name">Ambulans / Darurat Medis</span>
+              <span class="contact-number">119</span>
+            </a>
+            <a href="tel:110" class="contact-item">
+              <span class="contact-name">Polisi</span>
+              <span class="contact-number">110</span>
+            </a>
+            <div class="contact-item">
+              <span class="contact-name">Kemenkes Hotline Kesehatan Jiwa</span>
+              <span class="contact-number">1-500-454</span>
+            </div>
+            <div class="contact-item">
+              <span class="contact-name">Layanan SEJIWA (Himpunan Psikologi Ind)</span>
+              <span class="contact-number">119 (Ext. 8)</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button class="btn-secondary" @click="showEmergencyModal = false" style="width: 100%">Tutup</button>
+        </div>
+      </div>
+    </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -785,7 +825,6 @@ const startTracker = () => {
   gap: 8px;
 }
 
-/* Reusing check icon color logic if needed or let it inherit */
 .welcome-points li svg {
   color: #5ab2a8;
 }
@@ -807,5 +846,144 @@ const startTracker = () => {
   background-color: #4a968c;
   transform: translateY(-2px);
   box-shadow: 0 10px 15px -3px rgba(90, 178, 168, 0.4);
+}
+
+/* Modal Styles Reuse */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  padding: 24px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  animation: modalScale 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.modal-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #64748b;
+  padding: 0;
+  line-height: 1;
+}
+
+.emergency-note {
+  font-size: 14px;
+  color: #64748b;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.contact-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px;
+  background: #fef2f2;
+  border: 1px solid #fee2e2;
+  border-radius: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+}
+
+.contact-item:hover {
+  background: #fee2e2;
+  transform: translateY(-1px);
+}
+
+.contact-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 14px;
+}
+
+.contact-number {
+  font-weight: 700;
+  color: #ef4444;
+  font-size: 16px;
+  background: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.btn-secondary {
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+  padding: 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+@keyframes modalScale {
+  0% { transform: scale(0.9); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@media (max-width: 480px) {
+  .modal-content {
+    width: 95%;
+    padding: 16px;
+    max-height: 90vh; /* Prevent cut-off on small screens */
+    overflow-y: auto; /* Allow scrolling if content is too tall */
+  }
+
+  .contact-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+    text-align: left;
+  }
+  
+  .contact-name {
+      font-size: 13px; /* Slightly smaller text for very small screens */
+  }
+
+  .contact-number {
+    font-size: 14px;
+    align-self: flex-start; /* Move number to left for better scanability */
+    width: 100%; /* Full width for better touch target */
+    text-align: center;
+    margin-top: 4px;
+    background: white;
+  }
 }
 </style>

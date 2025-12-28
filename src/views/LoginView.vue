@@ -16,7 +16,7 @@ const handleLogin = async () => {
     isLoading.value = true;
     errorMessage.value = "";
     
-    // Simulate API call
+    // API call
     setTimeout(() => {
         if (email.value && password.value) {
              // Mock Login

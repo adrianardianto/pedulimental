@@ -112,8 +112,8 @@ onMounted(() => {
       date: `${a.date} • ${a.time}`,
       title: a.title,
       desc: a.desc,
-      link: "Baca Lagi",
-      action: "Bagikan",
+      link: "Lihat Detail",
+      action: "Baca Ulang",
       articleId: a.articleId
     })));
 
@@ -128,12 +128,12 @@ onMounted(() => {
 });
 
 const loadMore = async () => {
-  // If all items are currently visible, this acts as "Show Less"
+  // Jika semua item sudah tampil, fungsi menjadi "Tampilkan Lebih Sedikit"
   if (visibleActivities.value.length >= allActivities.value.length) {
     displayLimit.value = 3;
     visibleActivities.value = allActivities.value.slice(0, displayLimit.value);
     
-    // Optional: smooth scroll back to top of timeline
+    // Opsional: scroll kembali ke atas timeline
     const timeline = document.querySelector('.timeline-container');
     if (timeline) {
       timeline.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -141,11 +141,11 @@ const loadMore = async () => {
     return;
   }
 
-  // Otherwise, it acts as "Load More"
+  // Sebaliknya, fungsi menjadi "Muat Lebih Banyak"
   isLoading.value = true;
   showNoMoreData.value = false;
   
-  // Simulate network delay for UX
+  // Simulasi network delay
   await new Promise(resolve => setTimeout(resolve, 800));
 
   displayLimit.value += 3;
@@ -168,6 +168,8 @@ const handleAction = (item) => {
     router.push(`/edukasi/artikel${item.articleId}`);
   } else if (item.action === "Bagikan") {
     alert("Fitur Bagikan akan segera tersedia!");
+  } else if (item.action === "Baca Ulang") {
+    router.push(`/edukasi/artikel${item.articleId}`);
   }
 };
 </script>

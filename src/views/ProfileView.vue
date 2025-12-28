@@ -10,7 +10,7 @@ const router = useRouter();
 const authStore = useAuthStore();
 const { user } = storeToRefs(authStore);
 
-// Make a local copy for editing to avoid direct mutation of store state before save
+// Buat salinan lokal untuk edit agar tidak mengubah store langsung
 const editForm = ref({ ...user.value });
 
 const isEditing = ref(false);
@@ -21,7 +21,7 @@ const handleFileChange = (event) => {
   if (file) {
     const reader = new FileReader();
     reader.onload = (e) => {
-      // Preview immediately in local form
+      // Preview langsung di form lokal
       editForm.value.avatar = e.target.result;
     };
     reader.readAsDataURL(file);
@@ -41,7 +41,7 @@ const saveProfile = () => {
   }, 1000);
 };
 
-// Sync local form with store user when entering edit mode or mounting
+// Sinkronkan form lokal dengan data store
 onMounted(() => {
   if (!user.value) {
       router.push("/login");
