@@ -252,11 +252,11 @@ const sendMessage = () => {
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 24px;
-  /* Removed centered page title to match Edukasi left align */
+
 }
 
-/* Toolbar */
-/* Toolbar - Removed centered align */
+
+
 
 
 .search-wrapper {
@@ -291,7 +291,7 @@ const sendMessage = () => {
   color: #94a3b8;
 }
 
-/* Community Content */
+
 .community-content-wrapper {
   max-width: 1200px;
   margin: 0 auto;
@@ -323,21 +323,21 @@ const sendMessage = () => {
 }
 
 .tab-btn.active {
-  background: #5ab2a8; /* Using primary color for active tab background */
+  background: #5ab2a8;
   color: white;
   box-shadow: 0 2px 4px rgba(90, 178, 168, 0.2);
 }
 
-/* Group List */
+
 .group-list-container {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); /* Grid Layout */
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
   gap: 24px;
 }
 
 .group-card {
   display: flex;
-  flex-direction: column; /* Stack content vertically */
+  flex-direction: column;
   justify-content: space-between;
   align-items: flex-start;
   background: white;
@@ -345,10 +345,10 @@ const sendMessage = () => {
   padding: 24px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   transition: transform 0.2s;
-  height: 100%; /* Full height */
+  height: 100%;
 }
 
-/* Header */
+
 .page-title {
   font-size: 28px;
   font-weight: 700;
@@ -363,7 +363,7 @@ const sendMessage = () => {
   text-align: center;
 }
 
-/* Toolbar */
+
 .toolbar {
   display: flex;
   margin-bottom: 32px;
@@ -376,17 +376,17 @@ const sendMessage = () => {
   max-width: 700px;
 }
 
-/* Group Card New Style */
+
 .group-card {
   display: flex;
   flex-direction: column;
   background: white;
   border-radius: 16px;
-  overflow: hidden; /* Important for header image */
+  overflow: hidden;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
   height: 100%;
-  padding: 0; /* Clear padding */
+  padding: 0;
 }
 
 .group-card:hover {
@@ -400,7 +400,7 @@ const sendMessage = () => {
   width: 100%;
 }
 
-/* Card Header Badges */
+
 .header-badge {
   position: absolute;
   top: 16px;
@@ -431,7 +431,7 @@ const sendMessage = () => {
   flex: 1;
 }
 
-/* Removed .meta-top styles */
+
 
 .group-name {
   font-size: 18px;
@@ -444,7 +444,7 @@ const sendMessage = () => {
 .group-desc {
   font-size: 14px;
   color: #64748b;
-  margin-bottom: 24px; /* More space before buttons */
+  margin-bottom: 24px;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   line-clamp: 2;
@@ -457,7 +457,7 @@ const sendMessage = () => {
   margin-top: auto;
 }
 
-/* Action Buttons */
+
 .action-buttons {
   display: grid;
   grid-template-columns: 1.5fr 1fr;
@@ -483,7 +483,7 @@ const sendMessage = () => {
 
 .btn-leave {
   background: white;
-  color: #ef4444; /* Red color */
+  color: #ef4444;
   border: 1px solid #ef4444;
   padding: 10px;
   border-radius: 8px;
@@ -527,7 +527,7 @@ const sendMessage = () => {
   cursor: pointer;
 }
 
-/* Chat Room Styles */
+
 .chat-room {
   background: white;
   border-radius: 16px;
@@ -535,8 +535,8 @@ const sendMessage = () => {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  height: calc(100vh - 140px); /* Adjust based on navbar/padding */
-  max-width: 1200px; /* Increased from 800px */
+  height: calc(100vh - 140px);
+  max-width: 1200px;
   margin: 0 auto;
 }
 
@@ -549,11 +549,11 @@ const sendMessage = () => {
     bottom: 0;
     height: 100vh;
     border-radius: 0;
-    z-index: 2000; /* Ensure it's above navbar */
+    z-index: 2000;
   }
 
   .chat-messages {
-    padding-bottom: 80px; /* Space for input area */
+    padding-bottom: 80px;
   }
 }
 
@@ -564,7 +564,7 @@ const sendMessage = () => {
   display: flex;
   align-items: center;
   gap: 16px;
-  flex-shrink: 0; /* Prevent header from shrinking */
+  flex-shrink: 0;
 }
 
 .back-btn {
@@ -665,7 +665,7 @@ const sendMessage = () => {
   border-top: 1px solid #e2e8f0;
   display: flex;
   gap: 12px;
-  flex-shrink: 0; /* Prevent input area from shrinking */
+  flex-shrink: 0;
 }
 
 .chat-input {

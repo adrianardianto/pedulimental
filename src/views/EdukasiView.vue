@@ -140,7 +140,7 @@ const openContent = (item) => {
   margin-bottom: 24px;
 }
 
-/* Search Bar */
+
 .search-wrapper {
   position: relative;
   margin-bottom: 30px;
@@ -173,11 +173,11 @@ const openContent = (item) => {
   color: #94a3b8;
 }
 
-/* Filters */
+
 .filters-scroll {
   overflow-x: auto;
   margin-bottom: 40px;
-  padding-bottom: 5px; /* space for scrollbar if any */
+  padding-bottom: 5px;
   margin-left: -20px;
   margin-right: -20px;
   padding-left: 20px;
@@ -211,7 +211,7 @@ const openContent = (item) => {
   border-color: #5AB2A8;
 }
 
-/* Content Grid */
+
 .content-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -242,11 +242,11 @@ const openContent = (item) => {
 }
 
 .article-bg {
-  background: linear-gradient(135deg, #81C7D4 0%, #A2D2CD 100%); /* Blueish gradient */
+  background: linear-gradient(135deg, #81C7D4 0%, #A2D2CD 100%);
 }
 
 .video-bg {
-  background: linear-gradient(135deg, #A8D5BA 0%, #81C7D4 100%); /* Greenish gradient */
+  background: linear-gradient(135deg, #A8D5BA 0%, #81C7D4 100%);
 }
 
 .type-badge {
@@ -347,8 +347,8 @@ const openContent = (item) => {
   }
 }
 
-/* Animations */
-.list-move, /* apply transition to moving elements */
+
+.list-move,
 .list-enter-active,
 .list-leave-active {
   transition: all 0.5s ease;
@@ -360,19 +360,13 @@ const openContent = (item) => {
   transform: translateY(30px);
 }
 
-/* ensure leaving items are taken out of layout flow so that moving
-   items can be calculated correctly. */
+
 .list-leave-active {
   position: absolute; 
-  /* Need to ensure width matches grid column width, but absolute positioning in grid is tricky. 
-     For simple grid leave animations, sometimes using a different approach is better, 
-     but let's try just opacity/transform for now or basic FLIP without absolute if layout breaks.
-     Actually, for grid, absolute position often breaks layout. 
-     Let's standard non-absolute leave for now to be safe, or just hide immediately.
-  */
+
 }
 
-/* Clear Button */
+
 .clear-btn {
   position: absolute;
   right: 16px;
@@ -395,7 +389,7 @@ const openContent = (item) => {
   color: #64748b;
 }
 
-/* Empty State */
+
 .empty-state {
   text-align: center;
   padding: 60px 20px;

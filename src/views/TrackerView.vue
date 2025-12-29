@@ -372,10 +372,10 @@ const startTracker = () => {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 32px;
-  /* align-items: start; Removed to allow stretch */
+
 }
 
-/* Question Panel */
+
 .question-panel {
   background: white;
   border-radius: 20px;
@@ -525,7 +525,7 @@ const startTracker = () => {
   cursor: not-allowed;
 }
 
-/* Info Sidebar */
+
 .info-sidebar {
   background: white;
   border-radius: 20px;
@@ -533,11 +533,11 @@ const startTracker = () => {
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  /* height: fit-content; Removed to allow stretch */
+
 }
 
 .sidebar-header {
-  display: flex; /* Changed to row if icon is next to title? Or column like current design? Image shows icon top. */
+  display: flex;
   flex-direction: column;
   align-items: flex-start;
   margin-bottom: 16px;
@@ -678,7 +678,7 @@ const startTracker = () => {
   }
 }
 
-/* Result Styles */
+
 .result-panel {
   text-align: center;
 }
@@ -760,7 +760,7 @@ const startTracker = () => {
   background-color: #4a968c;
 }
 
-/* Recommendation Card */
+
 .recommendation-card {
   background: #f0fdf9;
   border-radius: 16px;
@@ -799,7 +799,7 @@ const startTracker = () => {
   margin-top: 2px;
 }
 
-/* Welcome Panel */
+
 .welcome-panel {
   text-align: center;
   display: flex;
@@ -878,7 +878,7 @@ const startTracker = () => {
   box-shadow: 0 10px 15px -3px rgba(90, 178, 168, 0.4);
 }
 
-/* Modal Styles Reuse */
+
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -992,8 +992,8 @@ const startTracker = () => {
   .modal-content {
     width: 95%;
     padding: 16px;
-    max-height: 90vh; /* Prevent cut-off on small screens */
-    overflow-y: auto; /* Allow scrolling if content is too tall */
+    max-height: 90vh;
+    overflow-y: auto;
   }
 
   .contact-item {
@@ -1004,13 +1004,13 @@ const startTracker = () => {
   }
   
   .contact-name {
-      font-size: 13px; /* Slightly smaller text for very small screens */
+      font-size: 13px;
   }
 
   .contact-number {
     font-size: 14px;
-    align-self: flex-start; /* Move number to left for better scanability */
-    width: 100%; /* Full width for better touch target */
+    align-self: flex-start;
+    width: 100%;
     text-align: center;
     margin-top: 4px;
     background: white;

@@ -310,7 +310,7 @@ const handleAction = (item) => {
 <style scoped>
 .riwayat-page {
   min-height: 100vh;
-  background-color: #f0fdf9; /* Light mint bg matching image */
+  background-color: #f0fdf9;
   padding-bottom: 60px;
 }
 
@@ -323,24 +323,24 @@ const handleAction = (item) => {
   font-weight: 700;
   color: #1e293b;
   margin-bottom: 40px;
-  padding-left: 20px; /* Align with cards roughly */
+  padding-left: 20px;
 }
 
 .timeline-container {
   position: relative;
   max-width: 800px;
   margin: 0 auto 60px;
-  padding-left: 30px; /* Space for markers */
+  padding-left: 30px;
 }
 
-/* Vertical Line */
+
 .timeline-line {
   position: absolute;
-  left: 30px; /* Center of marker */
+  left: 30px;
   top: 0;
   bottom: 0;
   width: 2px;
-  background-color: #a3e4d7; /* Light Green line */
+  background-color: #a3e4d7;
   transform: translateX(-50%);
   z-index: 0;
 }
@@ -352,13 +352,13 @@ const handleAction = (item) => {
   align-items: flex-start;
 }
 
-/* Marker */
+
 .timeline-marker {
   position: absolute;
-  left: 0; /* Relative to timeline container padding */
+  left: 0;
   transform: translateX(-50%);
   z-index: 10;
-  background-color: #f0fdf9; /* Match bg to hide line behind circle */
+  background-color: #f0fdf9;
   padding: 4px 0;
 }
 
@@ -372,9 +372,9 @@ const handleAction = (item) => {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
 
-/* Card */
+
 .activity-card {
-  margin-left: 40px; /* Space from marker */
+  margin-left: 40px;
   background: white;
   border-radius: 12px;
   padding: 20px;
@@ -456,7 +456,7 @@ const handleAction = (item) => {
   color: #cbd5e1;
 }
 
-/* Load More */
+
 .load-more-wrapper {
   text-align: center;
   margin-top: 32px;
@@ -467,7 +467,7 @@ const handleAction = (item) => {
 .load-more-btn {
   background: white;
   color: #5ab2a8;
-  border: 1px solid white; /* Blend in initially */
+  border: 1px solid white;
   font-family: inherit;
   font-size: 14px;
   font-weight: 500;
@@ -492,7 +492,7 @@ const handleAction = (item) => {
   animation: fadeIn 0.3s ease-out;
 }
 
-/* Empty State */
+
 .empty-state {
   text-align: center;
   padding: 60px 20px;
@@ -540,7 +540,7 @@ const handleAction = (item) => {
   background-color: #4a968c;
 }
 
-/* Stats Footer */
+
 .stats-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -600,7 +600,7 @@ const handleAction = (item) => {
   }
 }
 
-/* Modal Styles */
+
 .modal-overlay {
   position: fixed;
   top: 0;

@@ -196,23 +196,23 @@ onMounted(() => {
     font-weight: bold;
 }
 
-/* Featured Image */
+
 .featured-image {
   width: 100%;
-  max-width: 600px; /* Limit width to avoid being too wide */
+  max-width: 600px;
   height: 300px;
   border-radius: 16px;
-  margin: 0 auto 40px; /* Center horizontally */
+  margin: 0 auto 40px;
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
 }
 
-/* Video Container */
+
 .video-container {
   width: 100%;
   position: relative;
-  padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+  padding-bottom: 56.25%;
   height: 0;
   margin-bottom: 40px;
   border-radius: 16px;
@@ -250,7 +250,7 @@ onMounted(() => {
   color: #334155;
 }
 
-/* Deep sytles for v-html content */
+
 :deep(.intro-text) {
     font-size: 18px;
     color: #475569;

@@ -60,6 +60,12 @@ const router = createRouter({
       meta: { requiresAuth: true, title: 'Detail Artikel' }
     },
     {
+      path: '/register',
+      name: 'register',
+      component: () => import('../views/RegisterView.vue'),
+      meta: { title: 'Daftar' }
+    },
+    {
       path: '/login',
       name: 'login',
       component: () => import('../views/LoginView.vue'),

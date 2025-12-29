@@ -111,7 +111,7 @@ const handleLogin = async () => {
           </button>
           
           <p class="register-link">
-             Belum punya akun? <a href="#">Daftar sekarang</a>
+             Belum punya akun? <router-link to="/register">Daftar sekarang</router-link>
           </p>
         </form>
       </div>
@@ -137,7 +137,7 @@ const handleLogin = async () => {
   box-shadow: none;
 }
 
-/* Brand Section */
+
 .brand-section {
   background: linear-gradient(135deg, #5AB2A8 0%, #4a968c 100%);
   padding: 64px;
@@ -191,16 +191,16 @@ const handleLogin = async () => {
   right: -50px;
 }
 
-/* Form Section */
+
 .form-section {
   padding: 64px;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center; /* Center horizontally effectively */
+  align-items: center;
 }
 
-/* Limit form width inside the full section */
+
 .login-form, .form-header {
   width: 100%;
   max-width: 480px; 
@@ -351,11 +351,11 @@ const handleLogin = async () => {
 @media (max-width: 768px) {
   .login-wrapper {
     grid-template-columns: 1fr;
-    grid-template-rows: auto 1fr; /* Stack: Brand top, Form bottom */
+    grid-template-rows: auto 1fr;
   }
   
   .brand-section {
-    display: flex; /* Show it! */
+    display: flex;
     min-height: 250px;
     padding: 32px;
     align-items: center;
@@ -370,7 +370,7 @@ const handleLogin = async () => {
      max-width: 100%;
   }
   
-  /* Adjust circles for horizontal header */
+
   .c1 {
     width: 200px;
     height: 200px;
@@ -389,11 +389,11 @@ const handleLogin = async () => {
     padding: 32px;
     justify-content: flex-start;
     padding-top: 40px;
-    min-height: auto; /* Allow scrolling if needed, don't force full height */
+    min-height: auto;
     background: white;
     border-top-left-radius: 24px;
     border-top-right-radius: 24px;
-    margin-top: -20px; /* Overlap effect */
+    margin-top: -20px;
     z-index: 20;
     position: relative;
   }

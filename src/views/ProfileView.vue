@@ -190,7 +190,7 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   position: relative;
-  overflow: visible; /* Allow camera button to hang out */
+  overflow: visible;
 }
 
 .avatar-initial {
@@ -266,7 +266,7 @@ onMounted(() => {
   background-color: #fecaca;
 }
 
-/* Form Styles */
+
 .profile-form {
   display: flex;
   flex-direction: column;

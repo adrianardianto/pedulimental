@@ -358,7 +358,7 @@ onMounted(() => {
   padding-top: 40px;
 }
 
-/* Grid Layout Transition */
+
 .layout-grid {
   display: grid;
   grid-template-columns: 280px 1fr;
@@ -372,7 +372,7 @@ onMounted(() => {
   gap: 20px;
 }
 
-/* Sidebar */
+
 .sidebar {
   background: white;
   border-radius: 16px;
@@ -411,7 +411,7 @@ onMounted(() => {
   font-weight: 600;
 }
 
-/* Content Area */
+
 .section-title {
   font-size: 24px;
   font-weight: 700;
@@ -496,7 +496,7 @@ onMounted(() => {
   background-color: #4a968c;
 }
 
-/* Detail Panel */
+
 .detail-panel {
   background: white;
   border-radius: 16px;
@@ -584,7 +584,7 @@ onMounted(() => {
   line-height: 1.6;
 }
 
-/* Booking Form in Side Panel */
+
 .booking-form {
   background: #f8fafc;
   padding: 20px;
@@ -651,7 +651,7 @@ onMounted(() => {
 }
 
 
-/* Common */
+
 .empty-placeholder {
   text-align: center;
   padding: 40px;
@@ -660,7 +660,7 @@ onMounted(() => {
   border-radius: 16px;
 }
 
-/* Reuse Schedule styles */
+
 .schedule-grid {
   display: grid;
   gap: 20px;
