@@ -3,10 +3,9 @@ import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import Navbar from "../components/Navbar.vue";
 import {
-  Stethoscope,
+  Calendar,
   BookOpen,
   ClipboardList,
-  CheckCircle,
 } from "lucide-vue-next";
 import { useConsultationStore } from "../stores/consultation";
 import { useTrackerStore } from "../stores/tracker";
@@ -26,23 +25,23 @@ const stats = ref([
   {
     label: "Konsultasi Selesai",
     count: 0,
-    icon: Stethoscope,
-    color: "#5AB2A8",
-    bg: "#E0F2F1",
+    icon: Calendar,
+    color: "#ffffff",
+    bg: "#5AB2A8",
   },
   {
     label: "Tracker Diikuti",
     count: 0,
     icon: ClipboardList,
-    color: "#FFB74D",
-    bg: "#FFF3E0",
+    color: "#ffffff",
+    bg: "#FFB74D",
   },
   {
     label: "Artikel Dibaca",
     count: 0,
     icon: BookOpen,
-    color: "#64B5F6",
-    bg: "#E3F2FD",
+    color: "#ffffff",
+    bg: "#64B5F6",
   },
 ]);
 
@@ -67,7 +66,7 @@ onMounted(() => {
         id: c.id,
         type: "Konsultasi",
         typeLabel: "Konsultasi",
-        icon: Stethoscope,
+        icon: Calendar,
         iconColor: "#5AB2A8",
         date: `${c.date} • ${c.time}`,
         title: `Konsultasi dengan ${c.consultant.name}`,
@@ -571,16 +570,19 @@ const handleAction = (item) => {
 }
 
 .stat-count {
-  font-size: 24px;
-  font-weight: 700;
+  display: block;
+  font-size: 32px;
+  font-weight: 800;
   color: #1e293b;
   line-height: 1;
-  margin-bottom: 4px;
+  margin-bottom: 8px;
 }
 
 .stat-label {
-  font-size: 12px;
+  display: block;
+  font-size: 14px;
   color: #64748b;
+  font-weight: 500;
 }
 
 @media (max-width: 768px) {
