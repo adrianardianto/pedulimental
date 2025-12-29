@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import Navbar from "../components/Navbar.vue";
-import { Heart, Clock, Check } from "lucide-vue-next";
+import { Heart, Clock, Check, ClipboardList } from "lucide-vue-next";
 import { useTrackerStore } from "../stores/tracker";
 
 const trackerStore = useTrackerStore();
@@ -267,46 +267,51 @@ const startTracker = () => {
           </div>
         </div>
 
-        <!-- Right Panel: Info -->
-        <div class="info-panel">
-          <!-- Purpose Card -->
-          <div class="info-card white-card">
-            <div class="icon-bubble green-bubble">
-              <Heart :size="20" stroke-width="2.5" />
+        <!-- Right Panel: Info Sidebar -->
+        <div class="info-sidebar">
+          
+          <div class="sidebar-header">
+            <div class="icon-bubble green-bubble-soft">
+              <ClipboardList :size="24" stroke-width="2" />
             </div>
-            <h3 class="card-title">Tujuan Tracker</h3>
-            <p class="card-text">
-              Tracker ini dirancang untuk membantu kami memahami kondisi
-              kesehatan mental Anda dan memberikan rekomendasi yang sesuai.
-            </p>
-            <div class="time-estimate">
-              <Clock :size="16" />
-              <span>Estimasi waktu: 5-7 menit</span>
+            <div>
+              <h3 class="sidebar-title">Tujuan Tracker</h3>
             </div>
           </div>
+          
+          <p class="sidebar-description">
+            Tracker ini dirancang untuk membantu kami memahami kondisi
+            kesehatan mental Anda dan memberikan rekomendasi yang sesuai.
+          </p>
+          
+          <div class="time-estimate-box">
+            <Clock :size="18" />
+            <span>Estimasi waktu: 5-7 menit</span>
+          </div>
 
-          <!-- Positive Message Card -->
-          <div class="info-card gradient-card">
-            <h3 class="card-title white-text">Pesan Positif</h3>
+          <!-- Positive Message Box -->
+          <div class="message-box gradient-box">
+            <h4 class="box-title white-text">Pesan Positif</h4>
             <p class="quote-text">
               "Mengakui perasaan adalah langkah pertama menuju kesembuhan. Anda
               tidak sendirian dalam perjalanan ini."
             </p>
-            <p class="card-text white-text">
+            <p class="box-text white-text">
               Ingat, tracker ini bersifat rahasia dan hasil Anda hanya digunakan
               untuk membantu Anda mendapatkan dukungan yang tepat.
             </p>
           </div>
 
-          <!-- Help Card -->
-          <div class="info-card yellow-card">
-            <h3 class="card-title dark-text">Butuh bantuan segera?</h3>
-            <p class="card-text">
+          <!-- Help Box -->
+          <div class="message-box yellow-box">
+            <h4 class="box-title dark-text">Butuh bantuan segera?</h4>
+            <p class="box-text">
               Jika Anda merasa dalam krisis atau membutuhkan bantuan segera,
               hubungi layanan darurat atau hotline kesehatan mental.
             </p>
             <a href="#" class="emergency-link" @click.prevent="showEmergencyModal = true">Lihat Kontak Darurat</a>
           </div>
+
         </div>
       </div>
     </div>
@@ -367,7 +372,7 @@ const startTracker = () => {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 32px;
-  align-items: start;
+  /* align-items: start; Removed to allow stretch */
 }
 
 /* Question Panel */
@@ -376,6 +381,8 @@ const startTracker = () => {
   border-radius: 20px;
   padding: 40px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
 }
 
 .progress-header {
@@ -518,72 +525,111 @@ const startTracker = () => {
   cursor: not-allowed;
 }
 
-/* Info Panel */
-.info-panel {
+/* Info Sidebar */
+.info-sidebar {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  /* height: fit-content; Removed to allow stretch */
 }
 
-.info-card {
-  padding: 24px;
+.sidebar-header {
+  display: flex; /* Changed to row if icon is next to title? Or column like current design? Image shows icon top. */
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.sidebar-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+}
+
+.sidebar-description {
+  font-size: 15px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.time-estimate-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #f1f5f9;
+  padding: 12px 16px;
+  border-radius: 12px;
+  color: #64748b;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 32px;
+}
+
+.message-box {
   border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03);
+  padding: 24px;
+  margin-bottom: 24px;
 }
 
-.white-card {
-  background: white;
+.message-box:last-child {
+  margin-bottom: 0;
 }
 
-.gradient-card {
+.gradient-box {
   background: linear-gradient(135deg, #5ab2a8 0%, #64b5f6 100%);
   color: white;
+  box-shadow: 0 10px 15px -3px rgba(90, 178, 168, 0.2);
 }
 
-.yellow-card {
+.yellow-box {
   background: #fffbeb;
   border: 1px solid #fef3c7;
 }
 
-.icon-bubble {
-  width: 40px;
-  height: 40px;
+.box-title {
+  font-size: 18px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.box-title.white-text {
+  color: white;
+}
+
+.box-title.dark-text {
+  color: #1e293b;
+}
+
+.box-text {
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 0;
+}
+
+.box-text.white-text {
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.yellow-box .box-text {
+  color: #64748b;
+  margin-bottom: 12px;
+}
+
+.green-bubble-soft {
+  width: 48px;
+  height: 48px;
+  background-color: #f0fdf9;
+  color: #5ab2a8;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
-}
-
-.green-bubble {
-  background-color: #a3e4d7;
-  color: #ffffff;
-}
-
-.card-title {
-  font-size: 18px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: #1e293b;
-}
-
-.card-title.white-text {
-  color: white;
-}
-
-.card-title.dark-text {
-  color: #1e293b;
-}
-
-.card-text {
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.6;
-  margin-bottom: 16px;
-}
-
-.card-text.white-text {
-  color: rgba(255, 255, 255, 0.9);
 }
 
 .quote-text {
@@ -592,25 +638,14 @@ const startTracker = () => {
   color: white;
   margin-bottom: 16px;
   line-height: 1.5;
-  font-weight: 500;
-}
-
-.time-estimate {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background-color: #f1f5f9;
-  padding: 10px 16px;
-  border-radius: 8px;
-  color: #64748b;
-  font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
+  opacity: 0.95;
 }
 
 .emergency-link {
   color: #5ab2a8;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
 }
 
@@ -621,30 +656,25 @@ const startTracker = () => {
 @media (max-width: 900px) {
   .survey-grid {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
-
-  .info-panel {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 10px;
-  }
-
-  .info-card {
-    min-width: 300px;
+  
+  .info-sidebar {
+    width: 100%;
   }
 }
 
 @media (max-width: 600px) {
-  .info-panel {
-    flex-direction: column;
-  }
-
-  .info-card {
-    min-width: 100%;
-  }
-
   .question-text {
     font-size: 20px;
+  }
+  
+  .welcome-title {
+    font-size: 24px;
+  }
+  
+  .question-panel, .info-sidebar {
+    padding: 24px;
   }
 }
 
@@ -811,12 +841,12 @@ const startTracker = () => {
   list-style: none;
   padding: 0;
   display: flex;
-  gap: 24px;
+  flex-direction: column;
+  gap: 16px;
   margin-bottom: 40px;
   color: #475569;
   font-weight: 500;
-  flex-wrap: wrap;
-  justify-content: center;
+  align-items: flex-start;
 }
 
 .welcome-points li {
