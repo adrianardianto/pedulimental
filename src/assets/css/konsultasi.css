@@ -1,0 +1,432 @@
+/* Konsultasi View Styles */
+.konsultasi-page {
+  min-height: 100vh;
+  background-color: #f0fdf9;
+  padding-bottom: 60px;
+}
+
+.main-content {
+  padding-top: 40px;
+}
+
+
+.layout-grid {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  transition: all 0.3s ease;
+  align-items: start;
+}
+
+.layout-grid.with-detail {
+  grid-template-columns: 250px 1fr 350px;
+  gap: 20px;
+}
+
+
+.sidebar {
+  background: white;
+  border-radius: 16px;
+  padding: 20px;
+  height: fit-content;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.menu-item {
+  text-align: left;
+  padding: 12px 16px;
+  background: none;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  color: #64748b;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.menu-item:hover {
+  background-color: #f8fafc;
+  color: #5ab2a8;
+}
+
+.menu-item.active {
+  background-color: #5ab2a8;
+  color: white;
+  font-weight: 600;
+}
+
+
+.section-title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 24px;
+}
+
+.consultant-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.consultant-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.consultant-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.consultant-card.active {
+  border-color: #5AB2A8;
+  background-color: #f0fdf9;
+}
+
+.card-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.consultant-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.consultant-role {
+  color: #64748b;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 16px;
+}
+
+.select-btn {
+  background-color: #5ab2a8;
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+  font-size: 14px;
+}
+
+.select-btn:hover {
+  background-color: #4a968c;
+}
+
+
+.detail-panel {
+  background: white;
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.detail-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.detail-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+}
+
+.detail-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  line-height: 1.3;
+  margin-bottom: 6px;
+}
+
+.detail-role {
+  font-size: 13px;
+  color: #64748b;
+  line-height: 1.4;
+}
+
+.detail-section {
+  margin-bottom: 24px;
+}
+
+.detail-item {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  align-items: flex-start;
+}
+
+.detail-icon {
+  color: #5AB2A8;
+  margin-top: 2px;
+}
+
+.detail-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.detail-value {
+  font-size: 14px;
+  color: #334155;
+  font-weight: 500;
+}
+
+.detail-divider {
+  height: 1px;
+  background: #e2e8f0;
+  margin: 20px 0;
+}
+
+.section-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #94a3b8;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.section-text {
+  font-size: 14px;
+  color: #334155;
+  line-height: 1.6;
+}
+
+
+.booking-form {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 12px;
+  margin-top: 24px;
+}
+
+.form-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.form-group {
+  flex: 1;
+}
+
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #64748b;
+  margin-bottom: 4px;
+}
+
+.input-light {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #e2e8f0;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.price-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  color: #64748b;
+}
+
+.price-tag {
+  font-weight: 700;
+  color: #5AB2A8;
+  font-size: 16px;
+}
+
+.book-now-btn {
+  width: 100%;
+  padding: 12px;
+  background-color: #5AB2A8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.book-now-btn:hover {
+  background-color: #4a968c;
+}
+
+
+
+.empty-placeholder {
+  text-align: center;
+  padding: 40px;
+  color: #94a3b8;
+  background: white;
+  border-radius: 16px;
+}
+
+
+.schedule-grid {
+  display: grid;
+  gap: 20px;
+}
+
+.schedule-card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+}
+
+.schedule-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.card-avatar.small {
+  width: 50px;
+  height: 50px;
+}
+
+.consultant-name.small {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+.consultant-role.small {
+  font-size: 12px;
+  margin-bottom: 0;
+}
+
+.schedule-time {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 20px;
+  background: #f8fafc;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #1e293b;
+}
+
+.finish-btn {
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #5AB2A8;
+  background: white;
+  color: #5AB2A8;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.finish-btn:hover {
+  background: #f0fdf9;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.video-btn {
+  flex: 1;
+  padding: 12px;
+  background-color: #5AB2A8;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.video-btn:hover {
+  background-color: #4a968c;
+}
+
+.finish-btn {
+  flex: 1;
+}
+
+.completed-text {
+  color: #5ab2a8;
+  font-weight: 600;
+}
+
+@media (max-width: 1024px) {
+    .layout-grid.with-detail {
+        grid-template-columns: 1fr;
+    }
+    
+    .detail-panel {
+        position: static;
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+  .layout-grid {
+    grid-template-columns: 1fr;
+  }
+}
