@@ -1,0 +1,6 @@
+/* Home View Styles */
+.home-view {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
