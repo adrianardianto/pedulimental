@@ -14,10 +14,4 @@ import DailyRecommendation from '../components/DailyRecommendation.vue';
   </div>
 </template>
 
-<style scoped>
-.home-view {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-}
-</style>
+<style scoped src="@/assets/css/home.css"></style>
