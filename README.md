@@ -20,6 +20,15 @@ Aplikasi ini dibangun dengan pendekatan **Responsive Design** yang memastikan pe
 
 Semua fitur (Konsultasi Video, Edukasi, Dashboard) dapat diakses dengan lancar tanpa kendala tampilan di perangkat apa pun.
 
+## 📸 Tampilan Website
+
+Berikut adalah beberapa tampilan antarmuka dari PeduliMental:
+
+<div align="center">
+  <img src="./screenshots/Screenshot%202026-01-26%20213650.png" alt="Tampilan Aplikasi 1" width="45%" style="border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); margin-right: 10px;">
+  <img src="./screenshots/Screenshot%202026-01-26%20213708.png" alt="Tampilan Aplikasi 2" width="45%" style="border-radius: 10px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+</div>
+
 ## �🛠️ Teknologi yang Digunakan
 
 Project ini dibangun menggunakan teknologi web modern:
